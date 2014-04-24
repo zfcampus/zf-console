@@ -97,6 +97,11 @@ class Router
                 $this->showUsageMessageForRoute($route);
                 return;
             }
+
+            if ($name !== null) {
+                continue;
+            }
+
             $routeName = $route->getName();
             $tabs = ceil(( 15 - strlen($routeName) ) / 8);
             $console->write(' ' . $routeName, Color::GREEN);
