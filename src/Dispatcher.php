@@ -44,7 +44,7 @@ class Dispatcher
 
         $callable = $this->commandMap[$name];
 
-        if (is_string($callable)) {
+        if (! is_callable($callable) && is_string($callable)) {
             $callable = new $callable();
             if (! is_callable($callable)) {
                 throw new RuntimeException(sprintf(
