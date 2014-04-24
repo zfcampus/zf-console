@@ -1,0 +1,29 @@
+{
+    "name": "zfcampus/zf-console",
+    "description": "Library for creating and dispatching console commands",
+    "type": "library",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "zf2",
+        "zend",
+    ],
+    "homepage": "http://framework.zend.com/",
+    "support": {
+        "source": "https://github.com/zfcampus/zf-console",
+        "issues": "https://github.com/zfcampus/zf-console/issues"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    },
+    "require": {
+        "php": ">=5.3.23",
+        "zendframework/zend-console": "~2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "ZF\\Console\\": "src/"
+        }
+    }
+}
