@@ -6,6 +6,8 @@
 
 namespace ZF\Console;
 
+use InvalidArgumentException;
+use Traversable;
 use Zend\Console\Adapter\AdapterInterface as Console;
 use Zend\Console\ColorInterface as Color;
 
@@ -62,17 +64,21 @@ class Application
      *
      * @param string $name Application name
      * @param string $version Application version
-     * @param array $routes Routes/route specifications to use for the application
+     * @param array|Traversable $routes Routes/route specifications to use for the application
      * @param Console $console Console adapter to use within the application
      * @param Dispatcher $dispatcher Configured dispatcher mapping routes to callables
      */
     public function __construct(
         $name,
         $version,
-        array $routes,
+        $routes,
         Console $console,
         Dispatcher $dispatcher
     ) {
+        if (! is_array($routes) && ! $routes instanceof Traversable) {
+            throw new InvalidArgumentException('Routes must be provided as an array or Traversable object');
+        }
+
         $this->name       = $name;
         $this->version    = $version;
         $this->console    = $console;
@@ -259,10 +265,10 @@ class Application
      * Allows specifying an array of routes, which may be mixed Route instances or array
      * specifications for creating routes.
      * 
-     * @param array $routes 
+     * @param array|Traversable $routes 
      * @return self
      */
-    protected function setRoutes(array $routes)
+    protected function setRoutes($routes)
     {
         foreach ($routes as $route) {
             if ($route instanceof Route) {
