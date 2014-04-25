@@ -16,7 +16,7 @@ class HelpCommand
     protected $application;
 
     /**
-     * @param Application $application 
+     * @param Application $application
      */
     public function __construct(Application $application)
     {
@@ -24,7 +24,7 @@ class HelpCommand
     }
 
     /**
-     * @param Route $route 
+     * @param Route $route
      * @param Console $console
      * @return int
      */

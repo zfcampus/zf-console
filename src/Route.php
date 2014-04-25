@@ -41,8 +41,8 @@ class Route extends DefaultRouteMatcher
     protected $shortDescription = '';
 
     /**
-     * @param string $name 
-     * @param string $route Route string to match 
+     * @param string $name
+     * @param string $route Route string to match
      * @param array $constraints Argument constraints (optional)
      * @param array $defaults Argument default values (optional)
      * @param null|array $filters Filters to use for specific arguments (optional)
@@ -63,11 +63,11 @@ class Route extends DefaultRouteMatcher
     }
 
     /**
-     * Override match() 
+     * Override match()
      *
      * If matched, set the matches in the route
-     * 
-     * @param array $params 
+     *
+     * @param array $params
      * @return array|null
      */
     public function match($params)
@@ -98,7 +98,7 @@ class Route extends DefaultRouteMatcher
     }
 
     /**
-     * @param string $description 
+     * @param string $description
      * @return self
      */
     public function setDescription($description)
@@ -116,7 +116,7 @@ class Route extends DefaultRouteMatcher
     }
 
     /**
-     * @param array $descriptions 
+     * @param array $descriptions
      * @return self
      */
     public function setOptionsDescription(array $descriptions)
@@ -134,7 +134,7 @@ class Route extends DefaultRouteMatcher
     }
 
     /**
-     * @param string $description 
+     * @param string $description
      * @return self
      */
     public function setShortDescription($description)
@@ -169,8 +169,8 @@ class Route extends DefaultRouteMatcher
 
     /**
      * Was the parameter matched?
-     * 
-     * @param string $param 
+     *
+     * @param string $param
      * @return bool
      */
     public function matchedParam($param)
@@ -183,9 +183,9 @@ class Route extends DefaultRouteMatcher
 
     /**
      * Retrieve a matched parameter
-     * 
-     * @param string $param 
-     * @param mixed $default 
+     *
+     * @param string $param
+     * @param mixed $default
      * @return mixed
      */
     public function getMatchedParam($param, $default = null)

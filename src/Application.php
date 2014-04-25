@@ -111,8 +111,8 @@ class Application
      *
      * Otherwise, attempts to dispatch the matched command, returning the
      * execution status.
-     * 
-     * @param array $args 
+     *
+     * @param array $args
      * @return int
      */
     public function run(array $args = null)
@@ -142,8 +142,8 @@ class Application
 
     /**
      * Display the application version
-     * 
-     * @param Console $console 
+     *
+     * @param Console $console
      * @return int
      */
     public function showVersion(Console $console)
@@ -165,8 +165,8 @@ class Application
      *
      * If the message is a callable, calls it with the composed console
      * instance as an argument.
-     * 
-     * @param string|callable $message 
+     *
+     * @param string|callable $message
      */
     public function showMessage($messageOrCallable)
     {
@@ -185,8 +185,8 @@ class Application
      *
      * If a route name is provided, usage for that route only will be displayed;
      * otherwise, the name/short description for each will be present.
-     * 
-     * @param null|string $name 
+     *
+     * @param null|string $name
      */
     public function showUsageMessage($name = null)
     {
@@ -226,8 +226,8 @@ class Application
      *
      * If the default help implementation is used, also displayed with help
      * messages.
-     * 
-     * @param string|callable $bannerOrCallable 
+     *
+     * @param string|callable $bannerOrCallable
      * @return self
      */
     public function setBanner($bannerOrCallable)
@@ -246,8 +246,8 @@ class Application
      *
      * If the default help implementation is used, also displayed with help
      * messages.
-     * 
-     * @param string|callable $footerOrCallable 
+     *
+     * @param string|callable $footerOrCallable
      * @return self
      */
     public function setFooter($footerOrCallable)
@@ -264,8 +264,8 @@ class Application
      *
      * Allows specifying an array of routes, which may be mixed Route instances or array
      * specifications for creating routes.
-     * 
-     * @param array|Traversable $routes 
+     *
+     * @param array|Traversable $routes
      * @return self
      */
     protected function setRoutes($routes)
@@ -289,9 +289,9 @@ class Application
      * Sets up the default help command
      *
      * Creates the route, and maps the command.
-     * 
-     * @param RouteCollection $routeCollection 
-     * @param Dispatcher $dispatcher 
+     *
+     * @param RouteCollection $routeCollection
+     * @param Dispatcher $dispatcher
      */
     protected function setupHelpCommand(RouteCollection $routeCollection, Dispatcher $dispatcher)
     {
@@ -327,9 +327,9 @@ class Application
      * Sets up the default version command
      *
      * Creates the route, and maps the command.
-     * 
-     * @param RouteCollection $routeCollection 
-     * @param Dispatcher $dispatcher 
+     *
+     * @param RouteCollection $routeCollection
+     * @param Dispatcher $dispatcher
      */
     protected function setupVersionCommand(RouteCollection $routeCollection, Dispatcher $dispatcher)
     {
@@ -363,8 +363,8 @@ class Application
 
     /**
      * Display an error message indicating a route name was not recognized
-     * 
-     * @param string $name 
+     *
+     * @param string $name
      */
     protected function showUnrecognizedRouteMessage($name)
     {
@@ -376,8 +376,8 @@ class Application
 
     /**
      * Display the usage message for an individual route
-     * 
-     * @param Route $route 
+     *
+     * @param Route $route
      */
     protected function showUsageMessageForRoute(Route $route)
     {
@@ -407,8 +407,8 @@ class Application
 
     /**
      * Show message indicating inability to match a route.
-     * 
-     * @param array $args 
+     *
+     * @param array $args
      */
     protected function showUnmatchedRouteMessage(array $args)
     {

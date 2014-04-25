@@ -21,7 +21,7 @@ class RouteCollection implements Countable, IteratorAggregate, RouteMatcherInter
 
     /**
      * Implement Countable
-     * 
+     *
      * @return int
      */
     public function count()
@@ -31,7 +31,7 @@ class RouteCollection implements Countable, IteratorAggregate, RouteMatcherInter
 
     /**
      * Implement IteratorAggregate
-     * 
+     *
      * @return SplStack
      */
     public function getIterator()
@@ -40,7 +40,7 @@ class RouteCollection implements Countable, IteratorAggregate, RouteMatcherInter
     }
 
     /**
-     * @param Route $route 
+     * @param Route $route
      * @return self
      */
     public function addRoute(Route $route)
@@ -61,11 +61,11 @@ class RouteCollection implements Countable, IteratorAggregate, RouteMatcherInter
 
     /**
      * @param string $route
-     * @param array $constraints 
-     * @param array $defaults 
-     * @param array $aliases 
-     * @param null|array $filters 
-     * @param null|array $validators 
+     * @param array $constraints
+     * @param array $defaults
+     * @param array $aliases
+     * @param null|array $filters
+     * @param null|array $validators
      */
     public function addRouteSpec(array $spec)
     {
@@ -99,8 +99,8 @@ class RouteCollection implements Countable, IteratorAggregate, RouteMatcherInter
 
     /**
      * Does the named route exist?
-     * 
-     * @param string $name 
+     *
+     * @param string $name
      * @return bool
      */
     public function hasRoute($name)
@@ -110,8 +110,8 @@ class RouteCollection implements Countable, IteratorAggregate, RouteMatcherInter
 
     /**
      * Determine if any route matches
-     * 
-     * @param  array|null $params 
+     *
+     * @param  array|null $params
      * @return false|Route
      */
     public function match($params)
