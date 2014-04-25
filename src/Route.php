@@ -10,18 +10,44 @@ use Zend\Console\RouteMatcher\DefaultRouteMatcher;
 
 class Route extends DefaultRouteMatcher
 {
+    /**
+     * @var string
+     */
     protected $description = '';
 
+    /**
+     * @var null|array
+     */
     protected $matches;
 
+    /**
+     * @var string
+     */
     protected $name;
 
+    /**
+     * @var array
+     */
     protected $optionsDescription = array();
 
+    /**
+     * @var string
+     */
     protected $route;
 
+    /**
+     * @var string
+     */
     protected $shortDescription = '';
 
+    /**
+     * @param string $name 
+     * @param string $route Route string to match 
+     * @param array $constraints Argument constraints (optional)
+     * @param array $defaults Argument default values (optional)
+     * @param null|array $filters Filters to use for specific arguments (optional)
+     * @param null|array $validators Filters to use for specific arguments (optional)
+     */
     public function __construct(
         $name,
         $route,
