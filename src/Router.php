@@ -25,6 +25,14 @@ class Router
         $this->routeCollection = $routeCollection;
     }
 
+    /**
+     * Attempt to match routes against provided arguments
+     *
+     * If no route matches, displays a usage message.
+     * 
+     * @param array $args 
+     * @return bool
+     */
     public function match(array $args)
     {
         $route = $this->routeCollection->match($args);

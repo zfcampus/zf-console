@@ -42,6 +42,7 @@ class RouteCollection implements IteratorAggregate, RouteMatcherInterface
         }
 
         $this->routes[$name] = $route;
+        ksort($this->routes, SORT_NATURAL);
 
         return $this;
     }
