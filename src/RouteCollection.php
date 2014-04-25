@@ -7,15 +7,27 @@
 namespace ZF\Console;
 
 use ArrayIterator;
+use Countable;
 use InvalidArgumentException;
 use IteratorAggregate;
 use Zend\Console\RouteMatcher\RouteMatcherInterface;
 
-class RouteCollection implements IteratorAggregate, RouteMatcherInterface
+class RouteCollection implements Countable, IteratorAggregate, RouteMatcherInterface
 {
-    protected $stack;
-
+    /**
+     * @var array
+     */
     protected $routes = array();
+
+    /**
+     * Implement Countable
+     * 
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->routes);
+    }
 
     /**
      * Implement IteratorAggregate
