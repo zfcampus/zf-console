@@ -11,16 +11,16 @@ use Zend\Console\Adapter\AdapterInterface as Console;
 class HelpCommand
 {
     /**
-     * @var Router
+     * @var Application
      */
-    protected $router;
+    protected $application;
 
     /**
-     * @param Router $router 
+     * @param Application $application 
      */
-    public function __construct(Router $router)
+    public function __construct(Application $application)
     {
-        $this->router = $router;
+        $this->application = $application;
     }
 
     /**
@@ -31,7 +31,7 @@ class HelpCommand
     public function __invoke(Route $route, Console $console)
     {
         $command = $route->getMatchedParam('command', null);
-        $this->router->showUsageMessage($command);
+        $this->application->showUsageMessage($command);
         return 0;
     }
 }

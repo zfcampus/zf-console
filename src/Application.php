@@ -40,9 +40,9 @@ class Application
     protected $name;
 
     /**
-     * @var Router
+     * @var RouteCollection
      */
-    protected $router;
+    protected $routeCollection;
 
     /**
      * @var string
@@ -52,9 +52,7 @@ class Application
     /**
      * Initialize the application
      *
-     * Creates a RouteCollection, populates it with the $routes provided, and
-     * seeds a Router instance with both the RouteCollection and the Console
-     * instance.
+     * Creates a RouteCollection and populates it with the $routes provided.
      *
      * Sets the banner to call showVersion().
      *
@@ -80,14 +78,13 @@ class Application
         $this->console    = $console;
         $this->dispatcher = $dispatcher;
 
-        $routeCollection = new RouteCollection();
-        $this->router = new Router($console, $routeCollection);
-        $this->router->setRoutes($routes);
+        $this->routeCollection = $routeCollection = new RouteCollection();
+        $this->setRoutes($routes);
 
         $this->banner = array($this, 'showVersion');
 
         if (! $routeCollection->hasRoute('help')) {
-            $this->setupHelpCommand($this->router, $routeCollection, $dispatcher);
+            $this->setupHelpCommand($routeCollection, $dispatcher);
         }
 
         if (! $routeCollection->hasRoute('version')) {
@@ -121,13 +118,14 @@ class Application
 
         if (empty($args)) {
             $this->showMessage($this->banner);
-            $this->router->showUsageMessage();
+            $this->showUsageMessage();
             $this->showMessage($this->footer);
             return 0;
         }
 
-        $route = $this->router->match($args);
+        $route = $this->routeCollection->match($args);
         if (! $route instanceof Route) {
+            $this->showUnmatchedRouteMessage($args);
             return 1;
         }
 
@@ -151,7 +149,6 @@ class Application
         return 0;
     }
 
-
     /**
      * Display a message (banner or footer)
      *
@@ -172,6 +169,45 @@ class Application
 
         if (is_callable($messageOrCallable)) {
             call_user_func($messageOrCallable, $this->console);
+        }
+    }
+
+    /**
+     * Displays a usage message for the router
+     *
+     * If a route name is provided, usage for that route only will be displayed;
+     * otherwise, the name/short description for each will be present.
+     * 
+     * @param null|string $name 
+     */
+    public function showUsageMessage($name = null)
+    {
+        $console = $this->console;
+
+        if ($name === null) {
+            $console->writeLine('Available commands:', Color::GREEN);
+            $console->writeLine('');
+        }
+
+        foreach ($this->routeCollection as $route) {
+            if ($name === $route->getName()) {
+                $this->showUsageMessageForRoute($route);
+                return;
+            }
+
+            if ($name !== null) {
+                continue;
+            }
+
+            $routeName = $route->getName();
+            $tabs = ceil(( 15 - strlen($routeName) ) / 8);
+            $console->write(' ' . $routeName, Color::GREEN);
+            $console->writeLine(str_repeat("\t", $tabs) . $route->getShortDescription());
+        }
+
+        if ($name) {
+            $this->showUnrecognizedRouteMessage($name);
+            return;
         }
     }
 
@@ -216,17 +252,42 @@ class Application
     }
 
     /**
+     * Set routes to use
+     *
+     * Allows specifying an array of routes, which may be mixed Route instances or array
+     * specifications for creating routes.
+     * 
+     * @param array $routes 
+     * @return self
+     */
+    protected function setRoutes(array $routes)
+    {
+        foreach ($routes as $route) {
+            if ($route instanceof Route) {
+                $this->routeCollection->addRoute($route);
+                continue;
+            }
+
+            if (is_array($route)) {
+                $this->routeCollection->addRouteSpec($route);
+                continue;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Sets up the default help command
      *
      * Creates the route, and maps the command.
      * 
-     * @param Router $router 
      * @param RouteCollection $routeCollection 
      * @param Dispatcher $dispatcher 
      */
-    protected function setupHelpCommand(Router $router, RouteCollection $routeCollection, Dispatcher $dispatcher)
+    protected function setupHelpCommand(RouteCollection $routeCollection, Dispatcher $dispatcher)
     {
-        $help = new HelpCommand($this->router);
+        $help = new HelpCommand($this);
         $routeCollection->addRouteSpec(array(
             'name'                 => 'help',
             'route'                => 'help [<command>]',
@@ -278,5 +339,62 @@ class Application
         $dispatcher->map('version', function ($route, $console) use ($self) {
             return $self->showVersion($console);
         });
+    }
+
+    /**
+     * Display an error message indicating a route name was not recognized
+     * 
+     * @param string $name 
+     */
+    protected function showUnrecognizedRouteMessage($name)
+    {
+        $console = $this->console;
+        $console->writeLine('');
+        $console->writeLine(sprintf('Unrecognized command "%s"', $name), Color::WHITE, Color::RED);
+        $console->writeLine('');
+    }
+
+    /**
+     * Display the usage message for an individual route
+     * 
+     * @param Route $route 
+     */
+    protected function showUsageMessageForRoute(Route $route)
+    {
+        $console = $this->console;
+        $console->writeLine('Usage:', Color::GREEN);
+        $console->writeLine(' ' . $route->getRoute());
+        $console->writeLine('');
+
+        $options = $route->getOptionsDescription();
+        if (! empty($options)) {
+            $console->writeLine('Arguments:', Color::GREEN);
+            foreach ($options as $name => $description) {
+                $tabs = ceil(( 15 - strlen($name) ) / 8);
+                $console->write(' ' . $name, Color::GREEN);
+                $console->writeLine(str_repeat("\t", $tabs) . $description);
+            }
+            $console->writeLine('');
+        }
+
+        $description = $route->getDescription();
+        if (! empty($description)) {
+            $console->writeLine('Help:', Color::GREEN);
+            $console->writeLine('');
+            $console->writeLine($description);
+        }
+    }
+
+    /**
+     * Show message indicating inability to match a route.
+     * 
+     * @param array $args 
+     */
+    protected function showUnmatchedRouteMessage(array $args)
+    {
+        $this->console->write('Unrecognized command: ', Color::RED);
+        $this->console->writeLine(implode(' ', $args));
+        $this->console->writeLine('');
+        $this->showUsageMessage();
     }
 }
