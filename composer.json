@@ -21,6 +21,10 @@
         "php": ">=5.3.23",
         "zendframework/zend-console": "~2.0"
     },
+    "suggest": {
+        "zendframework/zend-filter": "~2.0; Useful for filtering/normalizing argument values",
+        "zendframework/zend-validator": "~2.0; Useful for providing more thorough argument validation logic"
+    },
     "autoload": {
         "psr-4": {
             "ZF\\Console\\": "src/"
