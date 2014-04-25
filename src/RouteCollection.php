@@ -54,7 +54,7 @@ class RouteCollection implements Countable, IteratorAggregate, RouteMatcherInter
         }
 
         $this->routes[$name] = $route;
-        ksort($this->routes, SORT_NATURAL);
+        ksort($this->routes, defined('SORT_NATURAL') ? constant('SORT_NATURAL') : SORT_STRING);
 
         return $this;
     }
