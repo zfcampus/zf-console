@@ -6,16 +6,16 @@
 
 namespace ZF\Console;
 
+use ArrayIterator;
 use InvalidArgumentException;
 use IteratorAggregate;
-use SplStack;
 use Zend\Console\RouteMatcher\RouteMatcherInterface;
 
 class RouteStack implements IteratorAggregate, RouteMatcherInterface
 {
     protected $stack;
 
-    protected $names = array();
+    protected $routes = array();
 
     /**
      * Implement IteratorAggregate
@@ -24,7 +24,7 @@ class RouteStack implements IteratorAggregate, RouteMatcherInterface
      */
     public function getIterator()
     {
-        return $this->getStack();
+        return new ArrayIterator($this->routes);
     }
 
     /**
@@ -34,15 +34,14 @@ class RouteStack implements IteratorAggregate, RouteMatcherInterface
     public function addRoute(Route $route)
     {
         $name = $route->getName();
-        if (isset($this->names[$name])) {
+        if (isset($this->routes[$name])) {
             throw new DomainException(sprintf(
                 'Failed adding route by name %s; a route by that name has already been registered',
                 $name
             ));
         }
 
-        $this->getStack()->push($route);
-        $this->names[$name] = true;
+        $this->routes[$name] = $route;
 
         return $this;
     }
@@ -110,17 +109,5 @@ class RouteStack implements IteratorAggregate, RouteMatcherInterface
         }
 
         return false;
-    }
-
-    /**
-     * @return SplStack
-     */
-    protected function getStack()
-    {
-        if ($this->stack instanceof SplStack) {
-            return $this->stack;
-        }
-        $this->stack = new SplStack;
-        return $this->stack;
     }
 }
