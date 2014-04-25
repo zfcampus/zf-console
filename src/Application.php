@@ -111,6 +111,8 @@ class Application
      */
     public function run(array $args = null)
     {
+        $this->setProcessTitle();
+
         if ($args === null) {
             global $argv;
             $args = array_slice($argv, 1);
@@ -339,6 +341,18 @@ class Application
         $dispatcher->map('version', function ($route, $console) use ($self) {
             return $self->showVersion($console);
         });
+    }
+
+    /**
+     * Set CLI process title (PHP versions >= 5.5)
+     */
+    protected function setProcessTitle()
+    {
+        if (version_compare(PHP_VERSION, '5.5', 'lt')) {
+            return;
+        }
+
+        cli_set_process_title($this->name);
     }
 
     /**
