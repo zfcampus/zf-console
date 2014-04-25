@@ -86,6 +86,17 @@ class RouteCollection implements IteratorAggregate, RouteMatcherInterface
     }
 
     /**
+     * Does the named route exist?
+     * 
+     * @param string $name 
+     * @return bool
+     */
+    public function hasRoute($name)
+    {
+        return array_key_exists($name, $this->routes);
+    }
+
+    /**
      * Determine if any route matches
      * 
      * @param  array|null $params 
