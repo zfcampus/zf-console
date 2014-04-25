@@ -13,21 +13,21 @@ class Router
 {
     protected $console;
 
-    protected $routeStack;
+    protected $routeCollection;
 
     /**
      * @param ConsoleAdapter $console 
-     * @param RouteStack $routeStack 
+     * @param RouteCollection $routeCollection 
      */
-    function __construct(ConsoleAdapter $console, RouteStack $routeStack)
+    function __construct(ConsoleAdapter $console, RouteCollection $routeCollection)
     {
         $this->console = $console;
-        $this->routeStack = $routeStack;
+        $this->routeCollection = $routeCollection;
     }
 
     public function match(array $args)
     {
-        $route = $this->routeStack->match($args);
+        $route = $this->routeCollection->match($args);
         if (! $route instanceof Route) {
             if (! empty($args)) {
                 $this->console->write('Unrecognized command: ', Color::RED);
@@ -42,11 +42,11 @@ class Router
     }
 
     /**
-     * @return RouteStack
+     * @return RouteCollection
      */
-    public function getRouteStack()
+    public function getRouteCollection()
     {
-        return $this->routeStack;
+        return $this->routeCollection;
     }
 
     /**
@@ -62,12 +62,12 @@ class Router
     {
         foreach ($routes as $route) {
             if ($route instanceof Route) {
-                $this->routeStack->addRoute($route);
+                $this->routeCollection->addRoute($route);
                 continue;
             }
 
             if (is_array($route)) {
-                $this->routeStack->addRouteSpec($route);
+                $this->routeCollection->addRouteSpec($route);
                 continue;
             }
         }
@@ -92,7 +92,7 @@ class Router
             $console->writeLine('');
         }
 
-        foreach ($this->routeStack as $route) {
+        foreach ($this->routeCollection as $route) {
             if ($name === $route->getName()) {
                 $this->showUsageMessageForRoute($route);
                 return;
@@ -109,7 +109,8 @@ class Router
         }
 
         if ($name) {
-            return $this->showUnrecognizedRouteMessage($name);
+            $this->showUnrecognizedRouteMessage($name);
+            return;
         }
     }
 

@@ -11,7 +11,7 @@ use InvalidArgumentException;
 use IteratorAggregate;
 use Zend\Console\RouteMatcher\RouteMatcherInterface;
 
-class RouteStack implements IteratorAggregate, RouteMatcherInterface
+class RouteCollection implements IteratorAggregate, RouteMatcherInterface
 {
     protected $stack;
 
