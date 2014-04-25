@@ -21,13 +21,18 @@
         "php": ">=5.3.23",
         "zendframework/zend-console": "~2.0"
     },
+    "require-dev": {
+        "fabpot/php-cs-fixer": "*@dev",
+        "phpunit/PHPUnit": "3.7.*"
+    },
     "suggest": {
         "zendframework/zend-filter": "~2.0; Useful for filtering/normalizing argument values",
         "zendframework/zend-validator": "~2.0; Useful for providing more thorough argument validation logic"
     },
     "autoload": {
         "psr-4": {
-            "ZF\\Console\\": "src/"
+            "ZF\\Console\\": "src/",
+            "ZFTest\\Console\\": "test/"
         }
     }
 }
