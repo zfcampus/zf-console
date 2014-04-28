@@ -301,7 +301,7 @@ ability to honor service and configuration overrides.
 To do this, you will need to bootstrap your application first. We'll assume you're putting your
 script in your application's `bin/` directory for this example.
 
-```console
+```php
 use Zend\Console\Adapter\AdapterInterface as Console;
 use Zend\Console\ColorInterface as Color;
 use ZF\Console\Application;
