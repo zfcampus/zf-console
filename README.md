@@ -289,6 +289,75 @@ The `Route` instance contains several methods of interest:
 - `getName()` will return the name of the route (which may be useful if you use the same callable
   for multiple routes).
 
+Using zf-console in Zend Framework 2 Applications
+-------------------------------------------------
+
+While Zend Framework 2 integrates console functionality into the MVC, you may want to write scripts
+that do not use the MVC. For instance, it may be easier to write an application-specific script
+without going through the hoops of creating a controller, adding console configuration, etc.
+However, you will likely still want access to services provided within modules, and also want the
+ability to honor service and configuration overrides.
+
+To do this, you will need to bootstrap your application first. We'll assume you're putting your
+script in your application's `bin/` directory for this example.
+
+```console
+use Zend\Console\Adapter\AdapterInterface as Console;
+use Zend\Console\ColorInterface as Color;
+use ZF\Console\Application;
+use ZF\Console\Dispatcher;
+
+chdir(dirname(__DIR__));
+require 'init_autoloader.php'; // grabs the Composer autoloader and/or ZF2 autoloader
+$application = Zend\Mvc\Application::init(require 'config/application.config.php');
+$services    = $application->getServiceManager();
+
+$buildModel = $services->get('My\BuildModel');
+
+$dispatcher = new Dispatcher();
+$dispatcher->map('build', function ($route, $console) use ($buildModel) {
+    $opts = $route->getMatches();
+    $result = $buildModel->build($opts['package'], $opts['target']);
+    if (! $result) {
+        $console->writeLine('Error building package!', Color::WHITE, Color::RED);
+        return 1;
+    }
+
+    $console->writeLine('Finished building package ' . $opts['package'], Color::GREEN);
+    return 0;
+});
+
+$application = new Application(
+    'Builder',
+    VERSION,
+    array(
+        array(
+            'name' => 'build',
+            'route' => 'build <package> [--target=]',
+            'description' => 'Build a package, using <package> as the package filename, and --target
+    as the application directory to be packaged.',
+            'short_description' => 'Build a package',
+            'options_descriptions' => array(
+                '<package>' => 'Package filename to build',
+                '--target'  => 'Name of the application directory to package; defaults to current working directory',
+            ),
+            'defaults' => array(
+                'target' => getcwd(), // default to current working directory
+            ),
+        ),
+    ),
+    Console::getInstance(),
+    $dispatcher
+);
+$exit = $application->run();
+exit($exit);
+```
+
+Essentially, you're calling `Zend\Mvc\Application::init()`, but not it's `run()` method. This
+ensures all modules are bootstrapped, which means all configuration is loaded and merged, all
+services are wired, and all listeners are attached. You then pull relevant services from the
+`ServiceManager` and pass them to your console callbacks.
+
 Best Practices
 --------------
 
