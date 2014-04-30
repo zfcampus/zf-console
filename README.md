@@ -32,7 +32,7 @@ And then run `composer update` to ensure the module is installed.
 Creating an application
 -----------------------
 
-Console applications written with `zf-deploy` consist of:
+Console applications written with `zf-console` consist of:
 
 - Defining console routes
 - Mapping route names to PHP callables
