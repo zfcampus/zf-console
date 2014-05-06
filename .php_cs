@@ -29,7 +29,6 @@ return Symfony\CS\Config\Config::create()
         'indentation',
         'linefeed',
         'php_closing_tag',
-        'psr0',
         'short_tag',
         'trailing_spaces',
         'unused_use',
