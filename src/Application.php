@@ -132,10 +132,13 @@ class Application
         }
 
         $route = $this->routeCollection->match($args);
-        if (! $route instanceof Route) {
+        $name  = $argv[1];
+        if (! $route instanceof Route && !$this->routeCollection->hasRoute($name)) {
             $this->showUnmatchedRouteMessage($args);
             return 1;
         }
+
+        $route = $this->routeCollection->match(array('help', $name));
 
         return $this->dispatcher->dispatch($route, $this->console);
     }
