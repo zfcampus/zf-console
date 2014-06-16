@@ -7,6 +7,7 @@
 namespace ZFTest\Console;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use ReflectionObject;
 use ZF\Console\Route;
 use ZF\Console\RouteCollection;
 
@@ -103,5 +104,67 @@ class RouteCollectionTest extends TestCase
         $this->collection->addRoute(new Route('alpha', 'alpha'));
 
         $this->assertFalse($this->collection->match(array('bogus', 'input')));
+    }
+
+    public function filtersAndValidators()
+    {
+        return array(
+            'class_names' => array(
+                'Zend\Filter\StringToLower',
+                'Zend\Validator\NotEmpty',
+                'Zend\Filter\StringToLower',
+                'Zend\Validator\NotEmpty',
+            ),
+            'functions' => array(
+                'trim',
+                'assert',
+                'Zend\Filter\Callback',
+                'Zend\Validator\Callback',
+            ),
+            'closures' => array(
+                function () {},
+                function () {},
+                'Zend\Filter\Callback',
+                'Zend\Validator\Callback',
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider filtersAndValidators
+     */
+    public function testCanSpecifyFiltersAndValidatorsByClassName($filter, $validator, $expectedFilter, $expectedValidator)
+    {
+        $spec = array(
+            'name'  => 'foo',
+            'route' => 'foo [<bar>]',
+            'description' => 'This is the full description',
+            'short_description' => 'This is the short description',
+            'filters' => array(
+                'bar' => $filter,
+            ),
+            'validators' => array(
+                'bar' => $validator,
+            ),
+        );
+        $this->collection->addRouteSpec($spec);
+        $this->assertEquals(1, count($this->collection));
+        $this->assertTrue($this->collection->hasRoute('foo'));
+
+        $route = $this->collection->getRoute('foo');
+
+        $r = new ReflectionObject($route);
+
+        $p = $r->getProperty('filters');
+        $p->setAccessible(true);
+        $filters = $p->getValue($route);
+        $this->assertArrayHasKey('bar', $filters);
+        $this->assertInstanceOf($expectedFilter, $filters['bar']);
+
+        $p = $r->getProperty('validators');
+        $p->setAccessible(true);
+        $validators = $p->getValue($route);
+        $this->assertArrayHasKey('bar', $validators);
+        $this->assertInstanceOf($expectedValidator, $validators['bar']);
     }
 }
