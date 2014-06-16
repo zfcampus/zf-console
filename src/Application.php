@@ -133,7 +133,14 @@ class Application
 
         $route = $this->routeCollection->match($args);
         if (! $route instanceof Route) {
-            $this->showUnmatchedRouteMessage($args);
+            $name  = count($args) ? $args[0] : false;
+            $route = $this->routeCollection->getRoute($name);
+            if (! $route instanceof Route) {
+                $this->showUnmatchedRouteMessage($args);
+                return 1;
+            }
+
+            $this->showUsageMessageForRoute($route, true);
             return 1;
         }
 
@@ -379,7 +386,7 @@ class Application
      *
      * @param Route $route
      */
-    protected function showUsageMessageForRoute(Route $route)
+    protected function showUsageMessageForRoute(Route $route, $log = false)
     {
         $console = $this->console;
         $console->writeLine('Usage:', Color::GREEN);

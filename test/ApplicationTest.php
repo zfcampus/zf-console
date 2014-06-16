@@ -88,4 +88,25 @@ class ApplicationTest extends TestCase
 
         $this->assertEquals(2, $this->application->run(array('self-update')));
     }
+
+    public function testRunThatMatchesFirstArgumentToARouteButFailsRoutingDisplaysHelpMessageForRoute()
+    {
+        $this->console->expects($writeLineSpy = $this->any())
+            ->method('writeLine');
+        $this->console->expects($writeSpy = $this->any())
+            ->method('write');
+        $return = $this->application->run(array('build'));
+
+        $this->assertEquals(1, $return);
+
+        $writeLines = $writeLineSpy->getInvocations();
+        $this->assertGreaterThanOrEqual(3, count($writeLines));
+        $this->assertContains('Usage:', $writeLines[0]->toString());
+        $this->assertContains('build ', $writeLines[1]->toString());
+
+        $writes = $writeSpy->getInvocations();
+        $this->assertGreaterThanOrEqual(2, count($writes));
+        $this->assertContains('<package>', $writes[0]->toString());
+        $this->assertContains('--target', $writes[1]->toString());
+    }
 }
