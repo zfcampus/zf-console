@@ -234,6 +234,17 @@ When executed via the Phar file, performs a self-update by querying
 the package repository. If successful, it will report the new version.
 ```
 
+> ### Name routes after the command
+>
+> We recommend naming routes after the command name. In part, this simplifies
+> finding the matching route definition, but more importantly: if a user
+> specifies the command, but does not specify valid arguments for it, the
+> command will be used to provide a help usage message for that route.
+>
+> As an example, in the above, if I typed `script.php build` without any
+> additional arguments, the usage message for the `build` command will be
+> displayed, since the command and route name match.
+
 Version reporting can be observed by executing `script --version` or `script -v`:
 
 ```console
