@@ -8,9 +8,14 @@ namespace ZF\Console;
 
 use ArrayIterator;
 use Countable;
+use DomainException;
 use InvalidArgumentException;
 use IteratorAggregate;
 use Zend\Console\RouteMatcher\RouteMatcherInterface;
+use Zend\Filter\Callback as CallbackFilter;
+use Zend\Filter\FilterInterface;
+use Zend\Validator\Callback as CallbackValidator;
+use Zend\Validator\ValidatorInterface;
 
 class RouteCollection implements Countable, IteratorAggregate, RouteMatcherInterface
 {
@@ -88,6 +93,9 @@ class RouteCollection implements Countable, IteratorAggregate, RouteMatcherInter
         $shortDescription   = (isset($spec['short_description']) && is_string($spec['short_description']))      ? $spec['short_description']    : '';
         $optionsDescription = (isset($spec['options_descriptions']) && is_array($spec['options_descriptions'])) ? $spec['options_descriptions'] : array();
 
+        $filters    = $this->prepareFilters($filters);
+        $validators = $this->prepareValidators($validators);
+
         $route = new Route($name, $routeString, $constraints, $defaults, $aliases, $filters, $validators);
         $route->setDescription($description);
         $route->setShortDescription($shortDescription);
@@ -147,5 +155,115 @@ class RouteCollection implements Countable, IteratorAggregate, RouteMatcherInter
         }
 
         return false;
+    }
+
+    /**
+     * Prepare filters
+     *
+     * If a filter is a class name, instantiate it.
+     *
+     * If a filter is a callback, casts to Callback filter.
+     *
+     * If the filter is not valid, raises an exception.
+     *
+     * @param  null|array $filters
+     * @return array|null
+     * @throws DomainException
+     */
+    protected function prepareFilters(array $filters = null)
+    {
+        if (null === $filters) {
+            return null;
+        }
+
+        foreach ($filters as $name => $filter) {
+            if (is_string($filter) && class_exists($filter)) {
+                $filter = new $filter();
+            }
+
+            if ($filter instanceof FilterInterface) {
+                $filters[$name] = $filter;
+                continue;
+            }
+
+            if (is_callable($filter)) {
+                $filters[$name] = new CallbackFilter($filter);
+                continue;
+            }
+
+            throw new DomainException(sprintf(
+                'Invalid filter provided for "%s"; expected Callable or Zend\Filter\FilterInterface, received "%s"',
+                $name,
+                $this->getType($filter)
+            ));
+        }
+
+        return $filters;
+    }
+
+    /**
+     * Prepare validators
+     *
+     * If a validator is a class name, instantiate it.
+     *
+     * If a validator is a callback, casts to Callback validator.
+     *
+     * If the validator is not valid, raises an exception.
+     *
+     * @param  array $validators
+     * @return array|null
+     * @throws DomainException
+     */
+    protected function prepareValidators(array $validators = null)
+    {
+        if (null === $validators) {
+            return null;
+        }
+
+        foreach ($validators as $name => $validator) {
+            if (is_string($validator) && class_exists($validator)) {
+                $validator = new $validator();
+            }
+
+            if ($validator instanceof ValidatorInterface) {
+                $validators[$name] = $validator;
+                continue;
+            }
+
+            if (is_callable($validator)) {
+                $validators[$name] = new CallbackValidator($validator);
+                continue;
+            }
+
+            throw new DomainException(sprintf(
+                'Invalid validator provided for "%s"; expected Callable or Zend\Validator\ValidatorInterface, received "%s"',
+                $name,
+                $this->getType($validator)
+            ));
+        }
+
+        return $validators;
+    }
+
+    /**
+     * Get an item's type, for error reporting
+     *
+     * @param  mixed $subject
+     * @return string
+     */
+    protected function getType($subject)
+    {
+        switch (true) {
+            case (is_object($subject)):
+                $type = get_class($subject);
+                break;
+            case (is_string($subject)):
+                $type = $subject;
+                break;
+            default:
+                $type = gettype($subject);
+                break;
+        }
+        return $type;
     }
 }
