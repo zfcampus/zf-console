@@ -52,6 +52,18 @@ class Application
     protected $version;
 
     /**
+     * The Message that will be used to display exception information
+     * @var string
+     */
+    protected $exceptionMessage;
+
+    /**
+     * Flag to specify if the application is in debug mode
+     * @var boolean
+     */
+    protected $debug = false;
+
+    /**
      * Initialize the application
      *
      * Creates a RouteCollection and populates it with the $routes provided.
@@ -67,13 +79,15 @@ class Application
      * @param array|Traversable $routes Routes/route specifications to use for the application
      * @param Console $console Console adapter to use within the application
      * @param Dispatcher $dispatcher Configured dispatcher mapping routes to callables
+     * @param string|callable message to be used for handling exceptions
      */
     public function __construct(
         $name,
         $version,
         $routes,
         Console $console,
-        Dispatcher $dispatcher
+        Dispatcher $dispatcher,
+        $exceptionMessage = null
     ) {
         if (! is_array($routes) && ! $routes instanceof Traversable) {
             throw new InvalidArgumentException('Routes must be provided as an array or Traversable object');
@@ -96,6 +110,22 @@ class Application
         if (! $routeCollection->hasRoute('version')) {
             $this->setupVersionCommand($routeCollection, $dispatcher);
         }
+
+        if($exceptionMessage === null) {
+            // Set default exception Message
+            $exceptionMessage = <<<EOT
+======================================================================
+   The application has thrown an exception!
+======================================================================
+ :className
+ :message
+
+
+EOT;
+
+        }
+
+        $this->setExceptionMessage($exceptionMessage);
     }
 
     /**
@@ -264,6 +294,110 @@ class Application
         }
         $this->footer = $footerOrCallable;
         return $this;
+    }
+
+    /**
+     * Sets the debug flag of the application
+     * @param boolean $flag
+     */
+    public function setDebug($flag)
+    {
+        $this->debug = (boolean)$flag;
+        return $this;
+    }
+
+    /**
+     * Sets exception handler to use the expection Message
+     * @param string|callable $exceptionMessage
+     * @return self
+     */
+    public function setExceptionMessage($exceptionMessage)
+    {
+        if (! is_string($exceptionMessage) && ! is_callable($exceptionMessage)) {
+            throw new InvalidArgumentException('Exception message must be a string message or callable');
+        }
+
+        $this->exceptionMessage = $exceptionMessage;
+
+
+        if($this->debug) {
+            // in debug mode we don't set exception handler
+            return $this;
+        }
+
+        if(is_callable($exceptionMessage)) {
+            set_exception_handler($exceptionMessage);
+        } else {
+            set_exception_handler(array($this,'defaultExceptionHandler'));
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets the exception Message that is used in the app
+     * @return string|callable
+     */
+    public function getExceptionMessage()
+    {
+        return $this->exceptionMessage;
+    }
+
+    /**
+     * Default Exception Handler
+     * @param \Exception $exception
+     */
+    public function defaultExceptionHandler($exception)
+    {
+        $previous = '';
+        $previousException = $exception->getPrevious();
+        while($previousException) {
+            $previous .= str_replace(
+                    array(
+                            ':className',
+                            ':message',
+                            ':code',
+                            ':file',
+                            ':line',
+                            ':stack',
+                    ),array(
+                            get_class($previousException),
+                            $previousException->getMessage(),
+                            $previousException->getCode(),
+                            $previousException->getFile(),
+                            $previousException->getLine(),
+                            $exception->getTraceAsString(),
+                    ),
+                    $this->previousMessage
+            );
+            $previousException = $previousException->getPrevious();
+        }
+
+        /* @var $exception \Exception */
+        $message = str_replace(
+                array(
+                        ':className',
+                        ':message',
+                        ':code',
+                        ':file',
+                        ':line',
+                        ':stack',
+                        ':previous',
+                ),array(
+                        get_class($exception),
+                        $exception->getMessage(),
+                        $exception->getCode(),
+                        $exception->getFile(),
+                        $exception->getLine(),
+                        $exception->getTraceAsString(),
+                        $previous
+                ),
+                $this->exceptionMessage
+        );
+
+        $this->console->writeLine('Application exception: ', Color::RED);
+        $this->console->write($message);
+        exit($exception->getCode());
     }
 
     /**
