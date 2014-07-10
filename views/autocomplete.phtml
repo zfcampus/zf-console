@@ -1,0 +1,47 @@
+#!/bin/sh
+#
+# == System wide installation ==
+# To install the autocompletion for bash, and hopefully zsh copy the complete
+# content of this file to /etc/bash_completion.d/<?= basename($_SERVER['PHP_SELF']) ?>.sh .
+#
+# The easies way will be to run
+# $ sudo <?= $_SERVER['PHP_SELF'] ?> auto-complete > /etc/bash_completion.d/zs-client.sh
+# $ source /etc/bash_completion.d/<?= basename($_SERVER['PHP_SELF']) ?>.sh
+#
+# == Installation for the local user only ==
+# Try these commands
+# $ <?= $_SERVER['PHP_SELF'] ?> auto-complete >> ~/.bashrc
+# $ source ~/.bashrc
+#
+
+if [[ -n ${ZSH_VERSION-} ]]; then
+    autoload -U +X bashcompinit && bashcompinit
+fi
+
+_complete_zscli() {
+    local cur
+
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+
+    # Assume first word is the actual app/console command
+    console="${COMP_WORDS[0]}"
+
+    if [[ ${COMP_CWORD} == 1 ]] ; then
+        # No command found, return the list of available commands
+        cmds=` ${console} commands:all | grep '^* ' | awk '{print $2}'`
+    else
+        # Commands found, parse options
+        RESULT=`${console} ${COMP_WORDS[1]} --help`
+        # echo "$RESULT" | grep '^* '
+        cmds=` echo "$RESULT" | grep '^  -' | awk '{ print $1 }'`
+        cmds=`echo -e "$cmds\n--help"`
+    fi
+
+    COMPREPLY=( $(compgen -W "${cmds}" -- ${cur}) )
+    return 0
+}
+
+export COMP_WORDBREAKS="\ \"\\'><=;|&("
+complete -F _complete_zscli <?= basename($_SERVER['PHP_SELF']) ?>
+
