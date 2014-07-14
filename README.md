@@ -206,6 +206,7 @@ Features
 - Help message reporting
 - Version reporting
 - Shell autocompletion
+- Exception handling
 
 Usage reporting may be observed by executing an application with no arguments, or with only the
 `help` argument:
@@ -329,6 +330,59 @@ The `Route` instance contains several methods of interest:
   and, if not matched, the `$default` value you provide.
 - `getName()` will return the name of the route (which may be useful if you use the same callable
   for multiple routes).
+
+Exception Handling
+------------------
+
+`zf-console` provides exception handling by default, via `ZF\Console\ExceptionHandler`. When your
+console application raises an exception, this handler will provide a "pretty" view of the error,
+instead of the full stack trace (unless you want to include the stack trace in your view!).
+
+The default message looks like the following:
+
+```console
+======================================================================
+   The application has thrown an exception!
+======================================================================
+
+ :className:
+ :message
+```
+
+where `:className` will be filled with the exception's class name, and `message` will contain the
+exception message, if any.
+
+You may provide your own template if desired:
+
+```php
+$application->getExceptionHandler()->setMessageTemplate($template);
+```
+
+The following template variables are defined:
+
+- `:className`
+- `:message`
+- `:code`
+- `:file`
+- `:line`
+- `:stack`
+- `:previous` (this is used to report previous exceptions in a trace)
+
+If you want to provide your own exception handler, you may do so by providing any PHP callable to
+the `setExceptionHandler()` method:
+
+```php
+$application->setExceptionHandler($handler);
+```
+
+### Debug mode
+
+If you want normal PHP stack traces and error reporting, you can put the application into debug
+mode:
+
+```php
+$application->setDebug(true);
+```
 
 Using zf-console in Zend Framework 2 Applications
 -------------------------------------------------
