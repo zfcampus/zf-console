@@ -1,16 +1,20 @@
+<?php
+$baseName = basename($_SERVER['PHP_SELF']);
+$funcName = md5($_SERVER['PHP_SELF'])
+?>
 #!/bin/sh
 #
 # == System wide installation ==
 # To install the autocompletion for bash, and hopefully zsh copy the complete
-# content of this file to /etc/bash_completion.d/<?= basename($_SERVER['PHP_SELF']) ?>.sh .
+# content of this file to /etc/bash_completion.d/<?php echo $baseName ?>.sh .
 #
 # The easies way will be to run
-# $ sudo <?= $_SERVER['PHP_SELF'] ?> auto-complete > /etc/bash_completion.d/zs-client.sh
-# $ source /etc/bash_completion.d/<?= basename($_SERVER['PHP_SELF']) ?>.sh
+# $ sudo <?php echo $_SERVER['PHP_SELF'] ?> auto-complete > /etc/bash_completion.d/<?php echo $baseName ?>.sh
+# $ source /etc/bash_completion.d/<?php echo $baseName ?>.sh
 #
 # == Installation for the local user only ==
 # Try these commands
-# $ <?= $_SERVER['PHP_SELF'] ?> auto-complete >> ~/.bashrc
+# $ <?php echo $_SERVER['PHP_SELF'] ?> auto-complete >> ~/.bashrc
 # $ source ~/.bashrc
 #
 
@@ -18,7 +22,7 @@ if [[ -n ${ZSH_VERSION-} ]]; then
     autoload -U +X bashcompinit && bashcompinit
 fi
 
-_complete_zscli() {
+_complete_<?php echo $funcName ?>() {
     local cur
 
     COMPREPLY=()
@@ -29,13 +33,12 @@ _complete_zscli() {
 
     if [[ ${COMP_CWORD} == 1 ]] ; then
         # No command found, return the list of available commands
-        cmds=` ${console} commands:all | grep '^* ' | awk '{print $2}'`
+        cmds=` ${console} help | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | grep "^ [a-z\-]\{1,\}[[:space:]]\{1,\}" | awk '{print $1}'`
     else
         # Commands found, parse options
         RESULT=`${console} ${COMP_WORDS[1]} --help`
-        # echo "$RESULT" | grep '^* '
-        cmds=` echo "$RESULT" | grep '^  -' | awk '{ print $1 }'`
-        cmds=`echo -e "$cmds\n--help"`
+        cmds=` echo "$RESULT" | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | grep '^ -' | awk '{ print $1 }'`
+        cmds=`echo -e "$cmds\n--help"` # --help is a non existing option, BUT it will give back the help for a command which is what we want
     fi
 
     COMPREPLY=( $(compgen -W "${cmds}" -- ${cur}) )
@@ -43,5 +46,5 @@ _complete_zscli() {
 }
 
 export COMP_WORDBREAKS="\ \"\\'><=;|&("
-complete -F _complete_zscli <?= basename($_SERVER['PHP_SELF']) ?>
-
+complete -F _complete_<?php echo $funcName ?> <?php echo $baseName ?>
+<php echo "\n" ?>

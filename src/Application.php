@@ -378,8 +378,7 @@ class Application
                 'short_description' => 'Autocomplete on bash',
         ));
 
-        $self = $this; // PHP < 5.4 compat
-        $dispatcher->map('autocomplete', function ($route, $console) use ($self) {
+        $dispatcher->map('autocomplete', function ($route, $console) {
             ob_start();
             include __DIR__.'/../views/autocomplete.phtml';
             $content = ob_get_contents();
