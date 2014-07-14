@@ -8,7 +8,8 @@ Introduction
 
 `zf-console` provides functionality on top of `Zend\Console`, specifically a methodology for
 creating standalone PHP console applications using `Zend\Console`'s `DefaultRouteMatcher`.
-It includes built-in "help" and "version" commands, and colorization (via `Zend\Console`).
+It includes built-in "help" and "version" commands, and colorization (via `Zend\Console`), as
+well as support for shell autocompletion.
 
 Requirements
 ------------
@@ -204,6 +205,7 @@ Features
 - Usage reporting
 - Help message reporting
 - Version reporting
+- Shell autocompletion
 
 Usage reporting may be observed by executing an application with no arguments, or with only the
 `help` argument:
@@ -214,6 +216,7 @@ Builder, version 1.1.3
 
 Available commands:
 
+ autocomplete   Command autocompletion setup
  build          Build a package
  help           Get help for individual commands
  self-update    Perform a self-update of the script
@@ -283,6 +286,28 @@ $application->setBanner(function ($console) {           // callable
 
 $application->setFooter('Copyright 2014 Zend Technologies');
 ```
+
+### Autocompletion
+
+Autocompletion is a useful feature of many login shells. `zf-console` provides autocompletion
+support for bash, zsh, and any shell that understands autocompletion rules in a similar fashion.
+Rules are generated per-script, using the `autocomplete` command:
+
+```console
+$ ./script autocomplete
+```
+
+Running this will output a shell script that you can save and add to your toolchain; the script
+itself contains information on how to save it and add it to your shell. In most cases, this will
+look something like:
+
+```console
+$ {script} autocomplete > > $HOME/bin/{script}_autocomplete.sh
+$ echo "source \$HOME/bin/{script}_autocomplete.sh" > > $HOME/{your_shell_rc}
+```
+
+where `{script}` is the name of the command, and `{your_shell_rc}` is the location of your shell's
+runtime configutation file (e.g., `.bashrc`, `.zshrc`).
 
 Dispatcher Callables
 --------------------
