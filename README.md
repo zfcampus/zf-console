@@ -470,6 +470,86 @@ return array(
 Using filters and validators well, you can ensure that when your dispatch callbacks receive data, it
 is already sanitized and ready to use.
 
+#### Filters provided by zf-console
+
+`zf-console` provides several filters for your convenience:
+
+- `ZF\Console\Filter\Explode` allows you to specify a delimiter to use to "explode" a string value
+  to an array of values. As an example:
+
+  ```php
+  // config/routes.php
+  
+  use ZF\Console\Filter\Explode as ExplodeFilter;
+  
+  return array(
+      array(
+          'name' => 'filter',
+          'route' => 'filter [--exclude=]',
+          'default' => array(
+              'exclude' => array(),
+          ),
+          'filters' => array(
+              'exclude' => new ExplodeFilter(','),
+          ),
+      )
+  );
+  ```
+
+  The above would explode values provided to `--exclude` using a `,`; `--exclude=foo,bar,baz` would
+  set `exclude` to `array('foo', 'bar', 'baz')`. By default, if no delimiter is provided, `,` is
+  assumed.
+
+- `ZF\Console\Filter\Json` allows you to specify a JSON-formatted string; it will then deserialize
+  it to native PHP values.
+
+  ```php
+  // config/routes.php
+  
+  use ZF\Console\Filter\Json as JsonFilter;
+  
+  return array(
+      array(
+          'name' => 'filter',
+          'route' => 'filter [--exclude=]',
+          'default' => array(
+              'exclude' => array(),
+          ),
+          'filters' => array(
+              'exclude' => new JsonFilter(),
+          ),
+      )
+  );
+  ```
+
+  The above would deserialize a JSON value provided to `--exclude`; `--exclude='["foo","bar","baz"]'` would
+  set `exclude` to `array('foo', 'bar', 'baz')`.
+
+- `ZF\Console\Filter\QueryString` allows you to specify a form-encoded string; it will then
+  deserialize it to native PHP values.
+
+  ```php
+  // config/routes.php
+  
+  use ZF\Console\Filter\QueryString;
+  
+  return array(
+      array(
+          'name' => 'filter',
+          'route' => 'filter [--exclude=]',
+          'default' => array(
+              'exclude' => array(),
+          ),
+          'filters' => array(
+              'exclude' => new QueryString(),
+          ),
+      )
+  );
+  ```
+
+  The above would deserialize a form-encoded value provided to `--exclude`;
+  `--exclude='foo=bar&baz=bat'` would set `exclude` to `array('foo' => 'bar', 'baz' => 'bat')`.
+
 Classes
 -------
 
@@ -483,3 +563,9 @@ This library defines the following classes:
   aggregation of route metadata, including the name and description.
 - `ZF\Console\RouteCollection`, which implements `Zend\Console\RouteMatcher\RouteMatcherInterface`,
   aggregates `ZF\Console\Route` instances, and performs route matching.
+- `ZF\Console\Filter\Explode`, which implements `Zend\Filter\FilterInterface`, and which [is
+  described above](#filters-provided-by-zf-console).
+- `ZF\Console\Filter\Json`, which implements `Zend\Filter\FilterInterface`, and which [is
+  described above](#filters-provided-by-zf-console).
+- `ZF\Console\Filter\QueryString`, which implements `Zend\Filter\FilterInterface`, and which [is
+  described above](#filters-provided-by-zf-console).
