@@ -96,6 +96,10 @@ class Application
         if (! $routeCollection->hasRoute('version')) {
             $this->setupVersionCommand($routeCollection, $dispatcher);
         }
+
+        if (! $routeCollection->hasRoute('autocomplete')) {
+            $this->setupAutocompleteCommand($routeCollection, $dispatcher);
+        }
     }
 
     /**
@@ -355,6 +359,35 @@ class Application
             return $self->showVersion($console);
         });
     }
+
+
+    /**
+     * Sets up the default autocomplete command
+     *
+     * Creates the route, and maps the command.
+     *
+     * @param RouteCollection $routeCollection
+     * @param Dispatcher $dispatcher
+     */
+    protected function setupAutocompleteCommand(RouteCollection $routeCollection, Dispatcher $dispatcher)
+    {
+        $routeCollection->addRouteSpec(array(
+                'name' => 'autocomplete',
+                'route' => 'autocomplete',
+                'description' => 'Shows how to activete autocomplete on bash',
+                'short_description' => 'Autocomplete on bash',
+        ));
+
+        $dispatcher->map('autocomplete', function ($route, $console) {
+            ob_start();
+            include __DIR__.'/../views/autocomplete.phtml';
+            $content = ob_get_contents();
+            ob_end_clean();
+
+            return $console->write($content);
+        });
+    }
+
 
     /**
      * Set CLI process title (PHP versions >= 5.5)

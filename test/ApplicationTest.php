@@ -57,13 +57,13 @@ class ApplicationTest extends TestCase
 
     public function testRunWithEmptyArgumentsShowsUsageMessage()
     {
-        $this->console->expects($this->exactly(2))
+        $this->console->expects($this->atLeastOnce())
             ->method('colorize');
 
-        $this->console->expects($this->exactly(8))
+        $this->console->expects($this->atLeastOnce())
             ->method('writeLine');
 
-        $this->console->expects($this->exactly(4))
+        $this->console->expects($this->atLeastOnce())
             ->method('write');
 
         $this->application->run(array());
