@@ -374,8 +374,8 @@ class Application
         $routeCollection->addRouteSpec(array(
                 'name' => 'autocomplete',
                 'route' => 'autocomplete',
-                'description' => 'Shows how to activete autocomplete on bash',
-                'short_description' => 'Autocomplete on bash',
+                'description' => 'Shows how to activate autocompletion of this command for your login shell',
+                'short_description' => 'Command autocompletion setup',
         ));
 
         $dispatcher->map('autocomplete', function ($route, $console) {
@@ -387,7 +387,6 @@ class Application
             return $console->write($content);
         });
     }
-
 
     /**
      * Set CLI process title (PHP versions >= 5.5)
