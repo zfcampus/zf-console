@@ -17,12 +17,12 @@ class Json implements FilterInterface
      */
     public function filter($value)
     {
-        if(!is_string($value)) {
+        if (!is_string($value)) {
             return $value;
         }
 
         @$data = json_decode($value, true);
-        if($data === false) {
+        if ($data === false) {
             return $value;
         }
 

@@ -17,7 +17,7 @@ class QueryString implements FilterInterface
      */
     public function filter($value)
     {
-        if(!is_string($value)) {
+        if (!is_string($value)) {
             return $value;
         }
 
@@ -26,10 +26,10 @@ class QueryString implements FilterInterface
         foreach ($pairs as $pair) {
             list($k, $v) = explode('=', $pair);
 
-            if(preg_match("/^(.*?)((\[(.*?)\])+)$/m",$k, $m)) {
+            if (preg_match("/^(.*?)((\[(.*?)\])+)$/m",$k, $m)) {
                 $parts = explode('][',rtrim(ltrim($m[2],'['),']'));
                 $json = '{"'.implode('":{"', $parts).'": '.json_encode($v).str_pad('', count($parts),'}');
-                if(!isset($data[$m[1]])) {
+                if (!isset($data[$m[1]])) {
                     $data[$m[1]] = json_decode($json, true);
                 } else {
                     $data[$m[1]] = ArrayUtils::merge($data[$m[1]], json_decode($json, true));
