@@ -33,8 +33,8 @@ class Dispatcher
 
     /**
      * Does the dispatcher have a handler for the given command?
-     * 
-     * @param string $command 
+     *
+     * @param string $command
      * @return bool
      */
     public function has($command)

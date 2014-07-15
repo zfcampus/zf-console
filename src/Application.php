@@ -543,8 +543,8 @@ class Application
      *
      * If a given route specification has a "handler" entry, and the dispatcher
      * does not currently have a handler for that command, map it.
-     * 
-     * @param array $route 
+     *
+     * @param array $route
      */
     protected function mapRouteHandler(array $route)
     {
