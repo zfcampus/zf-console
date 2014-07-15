@@ -82,7 +82,11 @@ class RouteCollection implements Countable, IteratorAggregate, RouteMatcherInter
         if (! isset($spec['route'])) {
             $spec['route'] = $spec['name'];
         }
-        $routeString = $spec['route'];
+        $routeString = $this->prependRouteWithCommand(
+            $name,
+            $spec['route'],
+            array_key_exists('prepend_command_to_route', $spec) ? $spec['prepend_command_to_route'] : true
+        );
 
         $constraints        = (isset($spec['constraints']) && is_array($spec['constraints']))                   ? $spec['constraints']          : array();
         $defaults           = (isset($spec['defaults']) && is_array($spec['defaults']))                         ? $spec['defaults']             : array();
@@ -265,5 +269,30 @@ class RouteCollection implements Countable, IteratorAggregate, RouteMatcherInter
                 break;
         }
         return $type;
+    }
+
+    /**
+     * Prepend the route with the command
+     *
+     * If the route does not start with the command already, and the
+     * `prepend_command_to_route` flag has not been toggled off, then prepend
+     * the command to the route and return it.
+     *
+     * @param string $command
+     * @param string $route
+     * @param bool $prependFlag
+     * @return string
+     */
+    protected function prependRouteWithCommand($command, $route, $prependFlag)
+    {
+        if (true !== $prependFlag) {
+            return $route;
+        }
+
+        if (preg_match('/^(?:' . preg_quote($command) . ')(?:\s|$)/', $route)) {
+            return $route;
+        }
+
+        return sprintf('%s %s', $command, $route);
     }
 }

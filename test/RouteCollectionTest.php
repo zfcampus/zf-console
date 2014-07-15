@@ -183,4 +183,56 @@ class RouteCollectionTest extends TestCase
         $route = $this->collection->getRoute('foo');
         $this->assertEquals('foo', $route->getRoute());
     }
+
+    /**
+     * @group 5
+     */
+    public function testRouteNamePrependedToCommandByDefaultWhenNameDoesNotMatchInitialRouteSequence()
+    {
+        $spec = array(
+            'name' => 'foo',
+            'route' => '<bar>',
+        );
+        $this->collection->addRouteSpec($spec);
+        $this->assertEquals(1, count($this->collection));
+        $this->assertTrue($this->collection->hasRoute('foo'));
+
+        $route = $this->collection->getRoute('foo');
+        $this->assertEquals('foo <bar>', $route->getRoute());
+    }
+
+    /**
+     * @group 5
+     */
+    public function testRouteNameNotPrependedToCommandWhenNameMatchesInitialRouteSequence()
+    {
+        $spec = array(
+            'name' => 'foo',
+            'route' => 'foo <bar>',
+        );
+        $this->collection->addRouteSpec($spec);
+        $this->assertEquals(1, count($this->collection));
+        $this->assertTrue($this->collection->hasRoute('foo'));
+
+        $route = $this->collection->getRoute('foo');
+        $this->assertEquals('foo <bar>', $route->getRoute());
+    }
+
+    /**
+     * @group 5
+     */
+    public function testRouteNameNotPrependedToCommandWhenFlagSaysNotTo()
+    {
+        $spec = array(
+            'name' => 'foo',
+            'route' => '<bar>',
+            'prepend_command_to_route' => false,
+        );
+        $this->collection->addRouteSpec($spec);
+        $this->assertEquals(1, count($this->collection));
+        $this->assertTrue($this->collection->hasRoute('foo'));
+
+        $route = $this->collection->getRoute('foo');
+        $this->assertEquals('<bar>', $route->getRoute());
+    }
 }
