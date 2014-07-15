@@ -68,6 +68,9 @@ consisting of the following members:
 - **validators** (optional): An array of name/`Zend\Validator\ValidatorInterface` pairs. The
   validator provided will be used to validate the named argument when matched; failure to validate
   will cause the route not to match.
+- **handler** (optional): A PHP callable, or a class name of a class with no constructor arguments
+  which is also invokable; if specified, and no command has been mapped in the `Dispatcher`, this
+  handler will be used to handle the command when invoked.
 
 Alternately, you can create a `ZF\Console\Route` instance. The signature is similar:
 
@@ -115,6 +118,7 @@ as the application directory to be packaged.',
         'defaults' => array(
             'target' => getcwd(), // default to current working directory
         ),
+        'handler' => 'My\Builder',
     ),
 );
 ```
@@ -159,6 +163,15 @@ function (\ZF\Console\Route $route, \Zend\Console\Adapter\AdapterInterface $cons
 
 Additionally, callables should return an integer status to use as the application's exit status; a
 `0` indicates success, while anything else indicates a failure.
+
+> #### Callables may be defined in route configuration
+>
+> As noted in the previous section, you can also provide the callable for handling the route via the
+> `handler` key of your route configuration. The same rules apply to that argument as for the
+> `map()` method.
+>
+> Any callables mapped directly to the `Dispatcher` instance will be preferred over those passed via
+> configuration. 
 
 ### Creating and running the application
 

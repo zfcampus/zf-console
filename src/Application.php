@@ -85,7 +85,7 @@ class Application
         $version,
         $routes,
         Console $console,
-        Dispatcher $dispatcher
+        Dispatcher $dispatcher = null
     ) {
         if (! is_array($routes) && ! $routes instanceof Traversable) {
             throw new InvalidArgumentException('Routes must be provided as an array or Traversable object');
@@ -94,6 +94,11 @@ class Application
         $this->name       = $name;
         $this->version    = $version;
         $this->console    = $console;
+
+        if (null === $dispatcher) {
+            $dispatcher = new Dispatcher();
+        }
+
         $this->dispatcher = $dispatcher;
 
         $this->routeCollection = $routeCollection = new RouteCollection();
@@ -112,6 +117,14 @@ class Application
         if (! $routeCollection->hasRoute('autocomplete')) {
             $this->setupAutocompleteCommand($routeCollection, $dispatcher);
         }
+    }
+
+    /**
+     * @return Dispatcher
+     */
+    public function getDispatcher()
+    {
+        return $this->dispatcher;
     }
 
     /**
@@ -344,6 +357,7 @@ class Application
 
             if (is_array($route)) {
                 $this->routeCollection->addRouteSpec($route);
+                $this->mapRouteHandler($route);
                 continue;
             }
         }
@@ -522,5 +536,27 @@ class Application
         }
 
         set_exception_handler($this->getExceptionHandler());
+    }
+
+    /**
+     * Map a route handler
+     *
+     * If a given route specification has a "handler" entry, and the dispatcher
+     * does not currently have a handler for that command, map it.
+     *
+     * @param array $route
+     */
+    protected function mapRouteHandler(array $route)
+    {
+        if (! isset($route['handler'])) {
+            return;
+        }
+
+        $command = $route['name'];
+        if ($this->dispatcher->has($command)) {
+            return;
+        }
+
+        $this->dispatcher->map($command, $route['handler']);
     }
 }
