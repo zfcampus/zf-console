@@ -168,4 +168,82 @@ class ApplicationTest extends TestCase
     {
         $this->markTestSkipped('PHP does not allow introspection of the exception handler stack, making it impossible to test if the exception handler was specified');
     }
+
+    /**
+     * @group 7
+     */
+    public function testCanInstantiateWithoutADispatcher()
+    {
+        $application = new Application(
+            'ZFConsoleApplication',
+            $this->version,
+            $this->getRoutes(),
+            $this->console
+        );
+        $this->assertInstanceOf('ZF\Console\Application', $application);
+        $this->assertInstanceOf('ZF\Console\Dispatcher', $application->getDispatcher());
+    }
+
+    /**
+     * @group 7
+     */
+    public function testCanPassHandlersToDefaultDispatcherViaRouteConfiguration()
+    {
+        $phpunit = $this;
+
+        $routes = array(
+            array(
+                'name'  => 'test',
+                'route' => 'test',
+                'description' => 'Test handler capabilities',
+                'short_description' => 'Test handler capabilities',
+                'handler' => function ($route, $console) use ($phpunit) {
+                    $phpunit->assertEquals('test', $route->getName());
+                    return 2;
+                },
+            ),
+        );
+        $application = new Application(
+            'ZFConsoleApplication',
+            $this->version,
+            $routes,
+            $this->console
+        );
+        $this->assertEquals(2, $application->run(array('test')));
+    }
+
+    /**
+     * @group 7
+     */
+    public function testHandlersConfiguredViaRoutesDoNotOverwriteThoseAlreadyInDispatcher()
+    {
+        $phpunit = $this;
+
+        $dispatcher = new Dispatcher();
+        $dispatcher->map('test', function ($route, $console) use ($phpunit) {
+            $phpunit->assertEquals('test', $route->getName());
+            return 2;
+        });
+
+        $routes = array(
+            array(
+                'name'  => 'test',
+                'route' => 'test',
+                'description' => 'Test handler capabilities',
+                'short_description' => 'Test handler capabilities',
+                'handler' => function ($route, $console) use ($phpunit) {
+                    $phpunit->fail('Handler from route configuration was invoked when it should not be');
+                    return 3;
+                },
+            ),
+        );
+        $application = new Application(
+            'ZFConsoleApplication',
+            $this->version,
+            $routes,
+            $this->console,
+            $dispatcher
+        );
+        $this->assertEquals(2, $application->run(array('test')));
+    }
 }

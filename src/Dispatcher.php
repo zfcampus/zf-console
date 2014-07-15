@@ -31,6 +31,17 @@ class Dispatcher
         return $this;
     }
 
+    /**
+     * Does the dispatcher have a handler for the given command?
+     *
+     * @param string $command
+     * @return bool
+     */
+    public function has($command)
+    {
+        return isset($this->commandMap[$command]);
+    }
+
     public function dispatch(Route $route, ConsoleAdapter $console)
     {
         $name = $route->getName();
