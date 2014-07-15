@@ -167,4 +167,20 @@ class RouteCollectionTest extends TestCase
         $this->assertArrayHasKey('bar', $validators);
         $this->assertInstanceOf($expectedValidator, $validators['bar']);
     }
+
+    /**
+     * @group 5
+     */
+    public function testAddingRouteSpecificationWithoutRouteUsesNameAsRoute()
+    {
+        $spec = array(
+            'name' => 'foo',
+        );
+        $this->collection->addRouteSpec($spec);
+        $this->assertEquals(1, count($this->collection));
+        $this->assertTrue($this->collection->hasRoute('foo'));
+
+        $route = $this->collection->getRoute('foo');
+        $this->assertEquals('foo', $route->getRoute());
+    }
 }

@@ -80,7 +80,7 @@ class RouteCollection implements Countable, IteratorAggregate, RouteMatcherInter
         $name = $spec['name'];
 
         if (! isset($spec['route'])) {
-            throw new InvalidArgumentException('Route specification is missing route');
+            $spec['route'] = $spec['name'];
         }
         $routeString = $spec['route'];
 
