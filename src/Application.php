@@ -378,7 +378,7 @@ class Application
         $help = new HelpCommand($this);
         $routeCollection->addRouteSpec(array(
             'name'                 => 'help',
-            'route'                => 'help [<command>]',
+            'route'                => '[<command>]',
             'description'          => "Display the help message for a given command.\n\nTo display the list of available commands, call the script or help with no arguments.",
             'short_description'    => 'Get help for individual commands',
             'options_descriptions' => array(
@@ -421,6 +421,7 @@ class Application
             'defaults' => array(
                 'version' => true,
             ),
+            'prepend_command_to_route' => false,
         ));
 
         $self = $this; // PHP < 5.4 compat
@@ -442,7 +443,6 @@ class Application
     {
         $routeCollection->addRouteSpec(array(
                 'name' => 'autocomplete',
-                'route' => 'autocomplete',
                 'description' => 'Shows how to activate autocompletion of this command for your login shell',
                 'short_description' => 'Command autocompletion setup',
         ));

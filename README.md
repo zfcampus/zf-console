@@ -50,7 +50,9 @@ Routes in `zf-console` are typically configuration driven. Each route is an asso
 consisting of the following members:
 
 - **name** (required): The name of the route. Names MUST be unique across the application.
-- **route** (required): The "route", or console arguments, to match (more below).
+- **route** (optional): The "route", or console arguments, to match (more below); if not specified,
+  **name** is utilized. Additionally, if the route does not start with **name**, **name** will be
+  prepended to the route (unless you opt out of this feature).
 - **description** (optional): A detailed help description for the given route.
 - **short_description** (optional): A short help description for the given route, used in command
   summaries.
@@ -71,6 +73,9 @@ consisting of the following members:
 - **handler** (optional): A PHP callable, or a class name of a class with no constructor arguments
   which is also invokable; if specified, and no command has been mapped in the `Dispatcher`, this
   handler will be used to handle the command when invoked.
+- **prepend_command_to_route** (optional): A flag that, if specified, indicates whether or not the
+  command name will be prepended to the route. Since this is the default behavior, only a value of
+  boolean false makes sense here.
 
 Alternately, you can create a `ZF\Console\Route` instance. The signature is similar:
 
@@ -100,14 +105,13 @@ We suggest putting your routes in a configuration file:
 return array(
     array(
         'name'  => 'self-update',
-        'route' => 'self-update',
         'description' => 'When executed via the Phar file, performs a self-update by querying
 the package repository. If successful, it will report the new version.',
         'short_description' => 'Perform a self-update of the script',
     ),
     array(
         'name' => 'build',
-        'route' => 'build <package> [--target=]',
+        'route' => '<package> [--target=]',
         'description' => 'Build a package, using <package> as the package filename, and --target
 as the application directory to be packaged.',
         'short_description' => 'Build a package',
@@ -139,6 +143,16 @@ as the application directory to be packaged.',
 > For a full overview of how to create route specification strings, please review the [ZF2 console
 > routes
 > documentation](http://framework.zend.com/manual/2.3/en/modules/zend.console.routes.html).
+
+> #### Route definitions
+>
+> Note that, by default, the route name will be prefixed to the `route` you pass. In the example
+> above, the `build` route becomes `build <package> [--target=]`. If you wish to be explicit, you
+> can include the command name in your route definition yourself, or pass the
+> `prepend_command_to_route` flag with a boolean false value to disable prepending the command name.
+>
+> Prepending is done to make explicit the idea the mapping of the command name to the route -- which
+> is particularly prudent when considering usage of the help system (which is command centric).
 
 ### Mapping routes to callables
 
