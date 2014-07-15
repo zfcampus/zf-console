@@ -27,9 +27,21 @@ class Application
     protected $console;
 
     /**
+     * Flag to specify if the application is in debug mode
+     *
+     * @var boolean
+     */
+    protected $debug = false;
+
+    /**
      * @var Dispatcher
      */
     protected $dispatcher;
+
+    /**
+     * @var callable
+     */
+    protected $exceptionHandler;
 
     /**
      * @var null|string|callable
@@ -121,6 +133,7 @@ class Application
      */
     public function run(array $args = null)
     {
+        $this->initializeExceptionHandler();
         $this->setProcessTitle();
 
         if ($args === null) {
@@ -268,6 +281,48 @@ class Application
         }
         $this->footer = $footerOrCallable;
         return $this;
+    }
+
+    /**
+     * Sets the debug flag of the application
+     * @param boolean $flag
+     */
+    public function setDebug($flag)
+    {
+        $this->debug = (boolean) $flag;
+        return $this;
+    }
+
+    /**
+     * Sets exception handler to use the expection Message
+     *
+     * @param callable $handler
+     * @return self
+     */
+    public function setExceptionHandler($handler)
+    {
+        if (! is_callable($handler)) {
+            throw new InvalidArgumentException('Exception handler must be callable');
+        }
+
+        $this->exceptionHandler = $handler;
+        return $this;
+    }
+
+    /**
+     * Gets the registered exception handler
+     *
+     * Lazy-instantiates an ExceptionHandler instance with the current console
+     * instance if no handler has been specified.
+     *
+     * @return callable
+     */
+    public function getExceptionHandler()
+    {
+        if (! is_callable($this->exceptionHandler)) {
+            $this->exceptionHandler = new ExceptionHandler($this->console);
+        }
+        return $this->exceptionHandler;
     }
 
     /**
@@ -455,5 +510,17 @@ class Application
         $this->console->writeLine(implode(' ', $args));
         $this->console->writeLine('');
         $this->showUsageMessage();
+    }
+
+    /**
+     * Initialize the exception handler (if not in debug mode)
+     */
+    protected function initializeExceptionHandler()
+    {
+        if ($this->debug) {
+            return;
+        }
+
+        set_exception_handler($this->getExceptionHandler());
     }
 }
