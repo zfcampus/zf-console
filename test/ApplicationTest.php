@@ -26,6 +26,7 @@ class ApplicationTest extends TestCase
             $this->console,
             $this->dispatcher
         );
+        $this->application->setDebug(true);
     }
 
     public function getRoutes()
@@ -57,13 +58,13 @@ class ApplicationTest extends TestCase
 
     public function testRunWithEmptyArgumentsShowsUsageMessage()
     {
-        $this->console->expects($this->exactly(2))
+        $this->console->expects($this->atLeastOnce())
             ->method('colorize');
 
-        $this->console->expects($this->exactly(8))
+        $this->console->expects($this->atLeastOnce())
             ->method('writeLine');
 
-        $this->console->expects($this->exactly(4))
+        $this->console->expects($this->atLeastOnce())
             ->method('write');
 
         $this->application->run(array());
@@ -108,5 +109,63 @@ class ApplicationTest extends TestCase
         $this->assertGreaterThanOrEqual(2, count($writes));
         $this->assertContains('<package>', $writes[0]->toString());
         $this->assertContains('--target', $writes[1]->toString());
+    }
+
+    /**
+     * @group 9
+     */
+    public function testComposesExceptionHandlerByDefault()
+    {
+        $handler = $this->application->getExceptionHandler();
+        $this->assertInstanceOf('ZF\Console\ExceptionHandler', $handler);
+    }
+
+    /**
+     * @group 9
+     */
+    public function testAllowsSettingCustomExceptionHandler()
+    {
+        $handler = function ($e) {};
+        $this->application->setExceptionHandler($handler);
+        $this->assertSame($handler, $this->application->getExceptionHandler());
+    }
+
+    /**
+     * @group 9
+     */
+    public function testDebugModeIsDisabledByDefault()
+    {
+        $application = new Application(
+            'ZFConsoleApplication',
+            $this->version,
+            $this->getRoutes(),
+            $this->console,
+            $this->dispatcher
+        );
+        $this->assertAttributeSame(false, 'debug', $application);
+    }
+
+    /**
+     * @group 9
+     */
+    public function testDebugModeIsMutable()
+    {
+        $application = new Application(
+            'ZFConsoleApplication',
+            $this->version,
+            $this->getRoutes(),
+            $this->console,
+            $this->dispatcher
+        );
+        $application->setDebug(true);
+        $this->assertAttributeSame(true, 'debug', $application);
+    }
+
+    /**
+     * @group 9
+     */
+    public function testExceptionHandlerIsNotInitializedWhenDebugModeIsEnabled()
+    {
+        $this->markTestSkipped('PHP does not allow introspection of the exception handler stack, making it impossible to test if the exception handler was specified');
     }
 }

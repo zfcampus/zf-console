@@ -1,0 +1,66 @@
+<?php
+$baseName = basename($_SERVER['PHP_SELF']);
+$funcName = md5($_SERVER['PHP_SELF'])
+?>
+#!/bin/sh
+#
+# == System wide installation ==
+#
+# --- bash ---
+#
+# To install system-wide autocompletion for bash, copy the complete contents of 
+# this file to /etc/bash_completion.d/<?php echo $baseName ?>.sh .
+#
+# The easiest way will be to run
+#
+# $ sudo <?php echo $_SERVER['PHP_SELF'] ?> autocomplete > /etc/bash_completion.d/<?php echo $baseName ?>.sh
+# $ source /etc/bash_completion.d/<?php echo $baseName ?>.sh
+#
+# --- zsh ---
+#
+# To install system-wide autocompletion for zsh, copy the complete contents of 
+# this file to /etc/zsh/<?php echo $baseName ?>.sh, and run:
+#
+# $ sudo echo "source /etc/zsh/<?php echo $baseName ?>.sh" >> /etc/zsh/zprofile
+#
+# == User installation only ==
+#
+# --- bash ---
+#
+# $ <?php echo $_SERVER['PHP_SELF'] ?> autocomplete >> ~/.bashrc
+# $ source ~/.bashrc
+#
+# --- zsh ---
+#
+# $ <?php echo $_SERVER['PHP_SELF'] ?> autocomplete >> ~/.zshrc
+# $ source ~/.zshrc
+
+if [[ -n ${ZSH_VERSION-} ]]; then
+    autoload -U +X bashcompinit && bashcompinit
+fi
+
+_complete_<?php echo $funcName ?>() {
+    local cur
+
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+
+    # Assume first word is the actual app/console command
+    console="${COMP_WORDS[0]}"
+
+    if [[ ${COMP_CWORD} == 1 ]] ; then
+        # No command found, return the list of available commands
+        cmds=` ${console} help | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | grep "^ [a-z\-]\{1,\}[[:space:]]\{1,\}" | awk '{print $1}'`
+    else
+        # Commands found, parse options
+        RESULT=`${console} ${COMP_WORDS[1]} --help`
+        cmds=` echo "$RESULT" | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | grep '^ -' | awk '{ print $1 }'`
+        cmds=`echo -e "$cmds\n--help"` # --help is a non-existing option, BUT it will give back the help for a command which is what we want
+    fi
+
+    COMPREPLY=( $(compgen -W "${cmds}" -- ${cur}) )
+    return 0
+}
+
+export COMP_WORDBREAKS="\ \"\\'><=;|&("
+complete -F _complete_<?php echo $funcName ?> <?php echo $baseName, "\n" ?>

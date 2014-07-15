@@ -8,7 +8,8 @@ Introduction
 
 `zf-console` provides functionality on top of `Zend\Console`, specifically a methodology for
 creating standalone PHP console applications using `Zend\Console`'s `DefaultRouteMatcher`.
-It includes built-in "help" and "version" commands, and colorization (via `Zend\Console`).
+It includes built-in "help" and "version" commands, and colorization (via `Zend\Console`), as
+well as support for shell autocompletion.
 
 Requirements
 ------------
@@ -204,6 +205,8 @@ Features
 - Usage reporting
 - Help message reporting
 - Version reporting
+- Shell autocompletion
+- Exception handling
 
 Usage reporting may be observed by executing an application with no arguments, or with only the
 `help` argument:
@@ -214,6 +217,7 @@ Builder, version 1.1.3
 
 Available commands:
 
+ autocomplete   Command autocompletion setup
  build          Build a package
  help           Get help for individual commands
  self-update    Perform a self-update of the script
@@ -284,6 +288,28 @@ $application->setBanner(function ($console) {           // callable
 $application->setFooter('Copyright 2014 Zend Technologies');
 ```
 
+### Autocompletion
+
+Autocompletion is a useful feature of many login shells. `zf-console` provides autocompletion
+support for bash, zsh, and any shell that understands autocompletion rules in a similar fashion.
+Rules are generated per-script, using the `autocomplete` command:
+
+```console
+$ ./script autocomplete
+```
+
+Running this will output a shell script that you can save and add to your toolchain; the script
+itself contains information on how to save it and add it to your shell. In most cases, this will
+look something like:
+
+```console
+$ {script} autocomplete > > $HOME/bin/{script}_autocomplete.sh
+$ echo "source \$HOME/bin/{script}_autocomplete.sh" > > $HOME/{your_shell_rc}
+```
+
+where `{script}` is the name of the command, and `{your_shell_rc}` is the location of your shell's
+runtime configutation file (e.g., `.bashrc`, `.zshrc`).
+
 Dispatcher Callables
 --------------------
 
@@ -304,6 +330,59 @@ The `Route` instance contains several methods of interest:
   and, if not matched, the `$default` value you provide.
 - `getName()` will return the name of the route (which may be useful if you use the same callable
   for multiple routes).
+
+Exception Handling
+------------------
+
+`zf-console` provides exception handling by default, via `ZF\Console\ExceptionHandler`. When your
+console application raises an exception, this handler will provide a "pretty" view of the error,
+instead of the full stack trace (unless you want to include the stack trace in your view!).
+
+The default message looks like the following:
+
+```console
+======================================================================
+   The application has thrown an exception!
+======================================================================
+
+ :className:
+ :message
+```
+
+where `:className` will be filled with the exception's class name, and `message` will contain the
+exception message, if any.
+
+You may provide your own template if desired:
+
+```php
+$application->getExceptionHandler()->setMessageTemplate($template);
+```
+
+The following template variables are defined:
+
+- `:className`
+- `:message`
+- `:code`
+- `:file`
+- `:line`
+- `:stack`
+- `:previous` (this is used to report previous exceptions in a trace)
+
+If you want to provide your own exception handler, you may do so by providing any PHP callable to
+the `setExceptionHandler()` method:
+
+```php
+$application->setExceptionHandler($handler);
+```
+
+### Debug mode
+
+If you want normal PHP stack traces and error reporting, you can put the application into debug
+mode:
+
+```php
+$application->setDebug(true);
+```
 
 Using zf-console in Zend Framework 2 Applications
 -------------------------------------------------
@@ -445,6 +524,86 @@ return array(
 Using filters and validators well, you can ensure that when your dispatch callbacks receive data, it
 is already sanitized and ready to use.
 
+#### Filters provided by zf-console
+
+`zf-console` provides several filters for your convenience:
+
+- `ZF\Console\Filter\Explode` allows you to specify a delimiter to use to "explode" a string value
+  to an array of values. As an example:
+
+  ```php
+  // config/routes.php
+  
+  use ZF\Console\Filter\Explode as ExplodeFilter;
+  
+  return array(
+      array(
+          'name' => 'filter',
+          'route' => 'filter [--exclude=]',
+          'default' => array(
+              'exclude' => array(),
+          ),
+          'filters' => array(
+              'exclude' => new ExplodeFilter(','),
+          ),
+      )
+  );
+  ```
+
+  The above would explode values provided to `--exclude` using a `,`; `--exclude=foo,bar,baz` would
+  set `exclude` to `array('foo', 'bar', 'baz')`. By default, if no delimiter is provided, `,` is
+  assumed.
+
+- `ZF\Console\Filter\Json` allows you to specify a JSON-formatted string; it will then deserialize
+  it to native PHP values.
+
+  ```php
+  // config/routes.php
+  
+  use ZF\Console\Filter\Json as JsonFilter;
+  
+  return array(
+      array(
+          'name' => 'filter',
+          'route' => 'filter [--exclude=]',
+          'default' => array(
+              'exclude' => array(),
+          ),
+          'filters' => array(
+              'exclude' => new JsonFilter(),
+          ),
+      )
+  );
+  ```
+
+  The above would deserialize a JSON value provided to `--exclude`; `--exclude='["foo","bar","baz"]'` would
+  set `exclude` to `array('foo', 'bar', 'baz')`.
+
+- `ZF\Console\Filter\QueryString` allows you to specify a form-encoded string; it will then
+  deserialize it to native PHP values.
+
+  ```php
+  // config/routes.php
+  
+  use ZF\Console\Filter\QueryString;
+  
+  return array(
+      array(
+          'name' => 'filter',
+          'route' => 'filter [--exclude=]',
+          'default' => array(
+              'exclude' => array(),
+          ),
+          'filters' => array(
+              'exclude' => new QueryString(),
+          ),
+      )
+  );
+  ```
+
+  The above would deserialize a form-encoded value provided to `--exclude`;
+  `--exclude='foo=bar&baz=bat'` would set `exclude` to `array('foo' => 'bar', 'baz' => 'bat')`.
+
 Classes
 -------
 
@@ -458,3 +617,9 @@ This library defines the following classes:
   aggregation of route metadata, including the name and description.
 - `ZF\Console\RouteCollection`, which implements `Zend\Console\RouteMatcher\RouteMatcherInterface`,
   aggregates `ZF\Console\Route` instances, and performs route matching.
+- `ZF\Console\Filter\Explode`, which implements `Zend\Filter\FilterInterface`, and which [is
+  described above](#filters-provided-by-zf-console).
+- `ZF\Console\Filter\Json`, which implements `Zend\Filter\FilterInterface`, and which [is
+  described above](#filters-provided-by-zf-console).
+- `ZF\Console\Filter\QueryString`, which implements `Zend\Filter\FilterInterface`, and which [is
+  described above](#filters-provided-by-zf-console).
