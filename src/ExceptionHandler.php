@@ -8,6 +8,7 @@ namespace ZF\Console;
 
 use Exception;
 use Zend\Console\Adapter\AdapterInterface as Console;
+use Zend\Console\ColorInterface as Color;
 
 class ExceptionHandler
 {
@@ -80,7 +81,7 @@ EOT;
         // code of zero; set it to 1 in such cases.
         $exitCode = $exception->getCode();
         $exitCode = $exitCode ?: 1;
-        exit($code);
+        exit($exitCode);
     }
 
     /**
