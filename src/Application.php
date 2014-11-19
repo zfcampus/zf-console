@@ -154,10 +154,32 @@ class Application
             $args = array_slice($argv, 1);
         }
 
+        $this->showMessage($this->banner);
+
+        $result = $this->processRun($args);
+
+        $this->showMessage($this->footer);
+
+        return $result;
+    }
+
+    /**
+     * Process run
+     * If the argument list is empty, displays a usage message.
+     *
+     * If arguments are provided, but no routes match, displays a usage message
+     * and returns a status of 1.
+     *
+     * Otherwise, attempts to dispatch the matched command, returning the
+     * execution status.
+     *
+     * @param array $args
+     * @return int
+     */
+    protected function processRun(array $args)
+    {
         if (empty($args)) {
-            $this->showMessage($this->banner);
             $this->showUsageMessage();
-            $this->showMessage($this->footer);
             return 0;
         }
 
@@ -203,7 +225,7 @@ class Application
      * If the message is a callable, calls it with the composed console
      * instance as an argument.
      *
-     * @param string|callable $message
+     * @param string|callable $messageOrCallable
      */
     public function showMessage($messageOrCallable)
     {
@@ -298,7 +320,10 @@ class Application
 
     /**
      * Sets the debug flag of the application
+     *
      * @param boolean $flag
+     *
+     * @return $this
      */
     public function setDebug($flag)
     {
@@ -396,9 +421,7 @@ class Application
         $banner = $this->banner; // PHP < 5.4 compat
         $footer = $this->footer; // PHP < 5.4 compat
         $dispatcher->map('help', function ($route, $console) use ($help, $self, $banner, $footer) {
-            $self->showMessage($banner);
             $help($route, $console);
-            $self->showMessage($footer);
             return 0;
         });
     }
