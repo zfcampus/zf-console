@@ -72,7 +72,7 @@ class ApplicationTest extends TestCase
 
     public function testRunThatDoesNotMatchRoutesDisplaysUnmatchedRouteMessage()
     {
-        $this->console->expects($this->at(0))
+        $this->console->expects($this->at(4))
             ->method('write')
             ->with($this->stringContains('Unrecognized command:'));
 
@@ -102,8 +102,8 @@ class ApplicationTest extends TestCase
 
         $writeLines = $writeLineSpy->getInvocations();
         $this->assertGreaterThanOrEqual(3, count($writeLines));
-        $this->assertContains('Usage:', $writeLines[0]->toString());
-        $this->assertContains('build ', $writeLines[1]->toString());
+        $this->assertContains('Usage:', $writeLines[2]->toString());
+        $this->assertContains('build ', $writeLines[3]->toString());
 
         $writes = $writeSpy->getInvocations();
         $this->assertGreaterThanOrEqual(2, count($writes));
