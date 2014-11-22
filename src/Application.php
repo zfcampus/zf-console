@@ -234,6 +234,8 @@ class Application
             $console->writeLine('');
         }
 
+        $maxSpaces = $this->calcMaxString($this->routeCollection->getRouteNames()) +  2;
+
         foreach ($this->routeCollection as $route) {
             if ($name === $route->getName()) {
                 $this->showUsageMessageForRoute($route);
@@ -245,9 +247,9 @@ class Application
             }
 
             $routeName = $route->getName();
-            $tabs = ceil(( 15 - strlen($routeName) ) / 8);
+            $spaces = $maxSpaces - strlen($routeName);
             $console->write(' ' . $routeName, Color::GREEN);
-            $console->writeLine(str_repeat("\t", $tabs) . $route->getShortDescription());
+            $console->writeLine(str_repeat(' ', $spaces) . $route->getShortDescription());
         }
 
         if ($name) {
@@ -336,6 +338,26 @@ class Application
             $this->exceptionHandler = new ExceptionHandler($this->console);
         }
         return $this->exceptionHandler;
+    }
+
+    /**
+     * Calculate the maximum string length for an array
+     *
+     * @param array $data
+     *
+     * @return int
+     */
+    protected function calcMaxString(array $data = array())
+    {
+        $maxLength = 0;
+
+        foreach ($data as $name) {
+            if (strlen($name) > $maxLength) {
+                $maxLength = strlen($name);
+            }
+        }
+
+        return $maxLength;
     }
 
     /**
@@ -497,10 +519,13 @@ class Application
         $options = $route->getOptionsDescription();
         if (! empty($options)) {
             $console->writeLine('Arguments:', Color::GREEN);
+
+            $maxSpaces = $this->calcMaxString(array_keys($options)) + 2;
+
             foreach ($options as $name => $description) {
-                $tabs = ceil(( 15 - strlen($name) ) / 8);
+                $spaces = $maxSpaces - strlen($name);
                 $console->write(' ' . $name, Color::GREEN);
-                $console->writeLine(str_repeat("\t", $tabs) . $description);
+                $console->writeLine(str_repeat(' ', $spaces) . $description);
             }
             $console->writeLine('');
         }

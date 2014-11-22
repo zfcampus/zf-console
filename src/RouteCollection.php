@@ -135,6 +135,16 @@ class RouteCollection implements Countable, IteratorAggregate, RouteMatcherInter
     }
 
     /**
+     * Retrieve all route names
+     *
+     * @return array
+     */
+    public function getRouteNames()
+    {
+        return array_keys($this->routes);
+    }
+
+    /**
      * Determine if any route matches
      *
      * @param  array|null $params
