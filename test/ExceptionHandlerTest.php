@@ -38,7 +38,10 @@ class ExceptionHandlerTest extends TestCase
 
     public function testCreateMessageFillsExpectedVariablesForExceptionWithoutPrevious()
     {
-        $this->handler->setMessageTemplate("ClassName: :className\nMessage: :message\nCode: :code\nFile: :file\nLine: :line\nStack: :stack\nPrevious: :previous");
+        $this->handler->setMessageTemplate(
+            "ClassName: :className\nMessage: :message\nCode: :code\nFile: :file\n"
+            . "Line: :line\nStack: :stack\nPrevious: :previous"
+        );
         $exception = new Exception('testing', 127);
         $message = $this->handler->createMessage($exception);
         $this->assertContains('ClassName: ' . get_class($exception), $message);
@@ -52,7 +55,9 @@ class ExceptionHandlerTest extends TestCase
 
     public function testCreateMessageFillsExpectedVariablesForExceptionWithPrevious()
     {
-        $this->handler->setMessageTemplate("ClassName: :className\nMessage: :message\nCode: :code\nPrevious: :previous");
+        $this->handler->setMessageTemplate(
+            "ClassName: :className\nMessage: :message\nCode: :code\nPrevious: :previous"
+        );
 
         $first = new DomainException('initial exception', 1);
         $second = new RuntimeException('second exception', 2, $first);

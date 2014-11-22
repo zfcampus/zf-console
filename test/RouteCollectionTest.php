@@ -122,8 +122,10 @@ class RouteCollectionTest extends TestCase
                 'Zend\Validator\Callback',
             ),
             'closures' => array(
-                function () {},
-                function () {},
+                function () {
+                },
+                function () {
+                },
                 'Zend\Filter\Callback',
                 'Zend\Validator\Callback',
             ),
@@ -133,8 +135,12 @@ class RouteCollectionTest extends TestCase
     /**
      * @dataProvider filtersAndValidators
      */
-    public function testCanSpecifyFiltersAndValidatorsByClassName($filter, $validator, $expectedFilter, $expectedValidator)
-    {
+    public function testCanSpecifyFiltersAndValidatorsByClassName(
+        $filter,
+        $validator,
+        $expectedFilter,
+        $expectedValidator
+    ) {
         $spec = array(
             'name'  => 'foo',
             'route' => 'foo [<bar>]',

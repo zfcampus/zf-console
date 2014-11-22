@@ -40,14 +40,18 @@ class QueryString implements FilterInterface
             list($k, $v) = explode('=', $pair);
 
             // Check if we have a normal key-value pair
-            if (! preg_match("/^(.*?)((\[(.*?)\])+)$/m",$k, $m)) {
+            if (! preg_match("/^(.*?)((\[(.*?)\])+)$/m", $k, $m)) {
                 $data[$k] = $v;
                 continue;
             }
 
             // Array values
-            $parts = explode('][',rtrim(ltrim($m[2],'['),']'));
-            $json  = '{"'.implode('":{"', $parts).'": '.json_encode($v).str_pad('', count($parts),'}');
+            $parts = explode('][', rtrim(ltrim($m[2], '['), ']'));
+            $json  = '{"'
+                . implode('":{"', $parts)
+                . '": '
+                . json_encode($v)
+                . str_pad('', count($parts), '}');
 
             if (isset($data[$m[1]])) {
                 $data[$m[1]] = ArrayUtils::merge($data[$m[1]], $this->jsonFilter->filter($json));

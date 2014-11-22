@@ -404,7 +404,9 @@ class Application
         $routeCollection->addRouteSpec(array(
             'name'                 => 'help',
             'route'                => '[<command>]',
-            'description'          => "Display the help message for a given command.\n\nTo display the list of available commands, call the script or help with no arguments.",
+            'description'          => "Display the help message for a given command.\n\n"
+                                   . 'To display the list of available commands, '
+                                   . 'call the script or help with no arguments.',
             'short_description'    => 'Get help for individual commands',
             'options_descriptions' => array(
                 'command' => 'Name of a command for which to get help',
