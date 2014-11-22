@@ -47,7 +47,8 @@ class ApplicationTest extends TestCase
                 'short_description' => 'Build a package',
                 'options_descriptions' => array(
                     '<package>' => 'Package filename to build',
-                    '--target'  => 'Name of the application directory to package; defaults to current working directory',
+                    '--target'  => 'Name of the application directory to package; '
+                                .  'defaults to current working directory',
                 ),
                 'defaults' => array(
                     'target' => getcwd(), // default to current working directory
@@ -125,7 +126,8 @@ class ApplicationTest extends TestCase
      */
     public function testAllowsSettingCustomExceptionHandler()
     {
-        $handler = function ($e) {};
+        $handler = function ($e) {
+        };
         $this->application->setExceptionHandler($handler);
         $this->assertSame($handler, $this->application->getExceptionHandler());
     }
@@ -166,7 +168,10 @@ class ApplicationTest extends TestCase
      */
     public function testExceptionHandlerIsNotInitializedWhenDebugModeIsEnabled()
     {
-        $this->markTestSkipped('PHP does not allow introspection of the exception handler stack, making it impossible to test if the exception handler was specified');
+        $this->markTestSkipped(
+            'PHP does not allow introspection of the exception handler stack, '
+            . 'making it impossible to test if the exception handler was specified'
+        );
     }
 
     /**
