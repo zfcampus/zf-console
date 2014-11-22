@@ -13,7 +13,8 @@ class Json implements FilterInterface
     /**
      * @see \Zend\Filter\FilterInterface::filter()
      * @param mixed $value
-     * @return mixed $value Returns the results of deserializing a JSON string; if incapable, returns the original value.
+     * @return mixed $value Returns the results of deserializing a JSON string;
+     *     if incapable, returns the original value.
      */
     public function filter($value)
     {
