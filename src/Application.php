@@ -413,6 +413,19 @@ class Application
     }
 
     /**
+     * Remove a route by name
+     *
+     * @param String $name
+     * @return self
+     */
+    public function removeRoute($name)
+    {
+        $this->routeCollection->removeRoute($name);
+
+        return $this;
+    }
+
+    /**
      * Sets up the default help command
      *
      * Creates the route, and maps the command.
