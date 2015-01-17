@@ -9,6 +9,7 @@ namespace ZF\Console;
 use InvalidArgumentException;
 use Traversable;
 use Zend\Console\Adapter\AdapterInterface as Console;
+use Zend\Console\Console as DefaultConsole;
 use Zend\Console\ColorInterface as Color;
 
 /**
@@ -84,7 +85,7 @@ class Application
         $name,
         $version,
         $routes,
-        Console $console,
+        Console $console = null,
         Dispatcher $dispatcher = null
     ) {
         if (! is_array($routes) && ! $routes instanceof Traversable) {
@@ -93,6 +94,11 @@ class Application
 
         $this->name       = $name;
         $this->version    = $version;
+
+        if (null === $console) {
+            $console = DefaultConsole::getInstance();
+        }
+
         $this->console    = $console;
 
         if (null === $dispatcher) {
