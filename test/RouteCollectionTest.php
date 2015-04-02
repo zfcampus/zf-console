@@ -24,12 +24,20 @@ class RouteCollectionTest extends TestCase
         $this->assertInstanceOf('Traversable', $iterator);
     }
 
+    /**
+     * In group 18 because it is a dependency
+     *
+     * @group 18
+     */
     public function testInitialCountIsZero()
     {
         $this->assertEquals(0, count($this->collection));
     }
 
     /**
+     * In group 18 because it is a dependency
+     *
+     * @group 18
      * @depends testInitialCountIsZero
      */
     public function testAddRouteAddsRouteToCollection()
@@ -38,6 +46,7 @@ class RouteCollectionTest extends TestCase
         $this->collection->addRoute($route);
         $this->assertEquals(1, count($this->collection));
         $this->assertTrue($this->collection->hasRoute('foo'));
+        return $this->collection;
     }
 
     /**
@@ -240,5 +249,24 @@ class RouteCollectionTest extends TestCase
 
         $route = $this->collection->getRoute('foo');
         $this->assertEquals('<bar>', $route->getRoute());
+    }
+
+    /**
+     * @group 18
+     * @depends testAddRouteAddsRouteToCollection
+     */
+    public function testCanRemoveAPreviouslyRegisteredRoute($collection)
+    {
+        $collection->removeRoute('foo');
+        $this->assertFalse($collection->hasRoute('foo'));
+    }
+
+    /**
+     * @group 18
+     */
+    public function testAttemptingToRemoveAnUnregisteredRouteRaisesAnException()
+    {
+        $this->setExpectedException('DomainException', 'registered');
+        $this->collection->removeRoute('does-not-exist');
     }
 }
