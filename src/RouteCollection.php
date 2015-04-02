@@ -128,18 +128,18 @@ class RouteCollection implements Countable, IteratorAggregate, RouteMatcherInter
     /**
      * @param String $name
      * @return self
+     * @throws DomainException if the provided route does not exist
      */
     public function removeRoute($name)
     {
-        if (isset($this->routes[$name])) {
-            unset($this->routes[$name]);
-        } else {
+        if (! isset($this->routes[$name])) {
             throw new DomainException(sprintf(
                 'Failed removing route by name %s; the route by that name has not been registered',
                 $name
             ));
         }
 
+        unset($this->routes[$name]);
         return $this;
     }
 

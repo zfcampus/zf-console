@@ -427,7 +427,6 @@ class Application
     public function removeRoute($name)
     {
         $this->routeCollection->removeRoute($name);
-
         return $this;
     }
 
