@@ -7,6 +7,7 @@
 namespace ZFTest\Console;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use ReflectionProperty;
 use Zend\Console\Adapter\AdapterInterface;
 use ZF\Console\Application;
 use ZF\Console\Dispatcher;
@@ -250,5 +251,30 @@ class ApplicationTest extends TestCase
             $dispatcher
         );
         $this->assertEquals(2, $application->run(array('test')));
+    }
+
+    /**
+     * @group 18
+     */
+    public function testCanRemoveAPreviouslyRegisteredRoute()
+    {
+        $r = new ReflectionProperty($this->application, 'routeCollection');
+        $r->setAccessible(true);
+        $collection = $r->getValue($this->application);
+
+        $this->assertTrue($collection->hasRoute('build'));
+
+        $this->application->removeRoute('build');
+
+        $this->assertFalse($collection->hasRoute('build'));
+    }
+
+    /**
+     * @group 18
+     */
+    public function testAttemptingToRemoveAnUnregisteredRouteRaisesAnException()
+    {
+        $this->setExpectedException('DomainException', 'registered');
+        $this->application->removeRoute('does-not-exist');
     }
 }
