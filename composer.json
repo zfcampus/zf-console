@@ -20,17 +20,17 @@
     },
     "require": {
         "php": ">=5.3.23",
-        "zendframework/zend-console": ">=2.0,<2.5"
+        "zendframework/zend-console": ">=2.3,<2.5"
     },
     "require-dev": {
         "phpunit/PHPUnit": "3.7.*",
         "squizlabs/php_codesniffer": "^2.3",
-        "zendframework/zend-filter": ">=2.0,<2.5",
-        "zendframework/zend-validator": ">=2.0,<2.5"
+        "zendframework/zend-filter": ">=2.3,<2.5",
+        "zendframework/zend-validator": ">=2.3,<2.5"
     },
     "suggest": {
-        "zendframework/zend-filter": ">=2.0,<2.5; Useful for filtering/normalizing argument values",
-        "zendframework/zend-validator": ">=2.0,<2.5; Useful for providing more thorough argument validation logic"
+        "zendframework/zend-filter": ">=2.3,<2.5; Useful for filtering/normalizing argument values",
+        "zendframework/zend-validator": ">=2.3,<2.5; Useful for providing more thorough argument validation logic"
     },
     "autoload": {
         "psr-4": {
