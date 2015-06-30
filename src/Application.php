@@ -531,6 +531,12 @@ class Application
             return;
         }
 
+        // Mac OS X does not support cli_set_process_title() due to security issues
+        // Bug fix for issue https://github.com/zfcampus/zf-console/issues/21
+        if (PHP_OS == 'Darwin') {
+            return;
+        }
+
         cli_set_process_title($this->name);
     }
 
