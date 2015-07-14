@@ -23,7 +23,7 @@
         "zendframework/zend-console": ">=2.3,<2.5"
     },
     "require-dev": {
-        "phpunit/PHPUnit": "3.7.*",
+        "phpunit/phpunit": "~4.7",
         "squizlabs/php_codesniffer": "^2.3",
         "zendframework/zend-filter": ">=2.3,<2.5",
         "zendframework/zend-validator": ">=2.3,<2.5"
@@ -34,7 +34,11 @@
     },
     "autoload": {
         "psr-4": {
-            "ZF\\Console\\": "src/",
+            "ZF\\Console\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
             "ZFTest\\Console\\": "test/"
         }
     }
