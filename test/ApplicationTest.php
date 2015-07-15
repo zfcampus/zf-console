@@ -32,30 +32,30 @@ class ApplicationTest extends TestCase
 
     public function getRoutes()
     {
-        return array(
-            array(
+        return [
+            [
                 'name'  => 'self-update',
                 'route' => 'self-update',
                 'description' => 'When executed via the Phar file, performs a self-update by querying
         the package repository. If successful, it will report the new version.',
                 'short_description' => 'Perform a self-update of the script',
-            ),
-            array(
+            ],
+            [
                 'name' => 'build',
                 'route' => 'build <package> [--target=]',
                 'description' => 'Build a package, using <package> as the package filename, and --target
         as the application directory to be packaged.',
                 'short_description' => 'Build a package',
-                'options_descriptions' => array(
+                'options_descriptions' => [
                     '<package>' => 'Package filename to build',
                     '--target'  => 'Name of the application directory to package; '
                                 .  'defaults to current working directory',
-                ),
-                'defaults' => array(
+                ],
+                'defaults' => [
                     'target' => getcwd(), // default to current working directory
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     public function testRunWithEmptyArgumentsShowsUsageMessage()
@@ -69,7 +69,7 @@ class ApplicationTest extends TestCase
         $this->console->expects($this->atLeastOnce())
             ->method('write');
 
-        $this->application->run(array());
+        $this->application->run([]);
     }
 
     public function testRunThatDoesNotMatchRoutesDisplaysUnmatchedRouteMessage()
@@ -78,7 +78,7 @@ class ApplicationTest extends TestCase
             ->method('write')
             ->with($this->stringContains('Unrecognized command:'));
 
-        $this->application->run(array('should', 'not', 'match'));
+        $this->application->run(['should', 'not', 'match']);
     }
 
     public function testRunThatMatchesInvokesCallableForMatchedRoute()
@@ -89,7 +89,7 @@ class ApplicationTest extends TestCase
             return 2;
         });
 
-        $this->assertEquals(2, $this->application->run(array('self-update')));
+        $this->assertEquals(2, $this->application->run(['self-update']));
     }
 
     public function testRunThatMatchesFirstArgumentToARouteButFailsRoutingDisplaysHelpMessageForRoute()
@@ -98,7 +98,7 @@ class ApplicationTest extends TestCase
             ->method('writeLine');
         $this->console->expects($writeSpy = $this->any())
             ->method('write');
-        $return = $this->application->run(array('build'));
+        $return = $this->application->run(['build']);
 
         $this->assertEquals(1, $return);
 
@@ -197,8 +197,8 @@ class ApplicationTest extends TestCase
     {
         $phpunit = $this;
 
-        $routes = array(
-            array(
+        $routes = [
+            [
                 'name'  => 'test',
                 'route' => 'test',
                 'description' => 'Test handler capabilities',
@@ -207,15 +207,15 @@ class ApplicationTest extends TestCase
                     $phpunit->assertEquals('test', $route->getName());
                     return 2;
                 },
-            ),
-        );
+            ],
+        ];
         $application = new Application(
             'ZFConsoleApplication',
             $this->version,
             $routes,
             $this->console
         );
-        $this->assertEquals(2, $application->run(array('test')));
+        $this->assertEquals(2, $application->run(['test']));
     }
 
     /**
@@ -231,8 +231,8 @@ class ApplicationTest extends TestCase
             return 2;
         });
 
-        $routes = array(
-            array(
+        $routes = [
+            [
                 'name'  => 'test',
                 'route' => 'test',
                 'description' => 'Test handler capabilities',
@@ -241,8 +241,8 @@ class ApplicationTest extends TestCase
                     $phpunit->fail('Handler from route configuration was invoked when it should not be');
                     return 3;
                 },
-            ),
-        );
+            ],
+        ];
         $application = new Application(
             'ZFConsoleApplication',
             $this->version,
@@ -250,7 +250,7 @@ class ApplicationTest extends TestCase
             $this->console,
             $dispatcher
         );
-        $this->assertEquals(2, $application->run(array('test')));
+        $this->assertEquals(2, $application->run(['test']));
     }
 
     /**

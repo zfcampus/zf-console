@@ -22,7 +22,7 @@ class RouteCollection implements Countable, IteratorAggregate, RouteMatcherInter
     /**
      * @var array
      */
-    protected $routes = array();
+    protected $routes = [];
 
     /**
      * Implement Countable
@@ -90,13 +90,13 @@ class RouteCollection implements Countable, IteratorAggregate, RouteMatcherInter
 
         $constraints        = (isset($spec['constraints']) && is_array($spec['constraints']))
             ? $spec['constraints']
-            : array();
+            : [];
         $defaults           = (isset($spec['defaults']) && is_array($spec['defaults']))
             ? $spec['defaults']
-            : array();
+            : [];
         $aliases            = (isset($spec['aliases']) && is_array($spec['aliases']))
             ? $spec['aliases']
-            : array();
+            : [];
         $filters            = (isset($spec['filters']) && is_array($spec['filters']))
             ? $spec['filters']
             : null;
@@ -111,7 +111,7 @@ class RouteCollection implements Countable, IteratorAggregate, RouteMatcherInter
             : '';
         $optionsDescription = (isset($spec['options_descriptions']) && is_array($spec['options_descriptions']))
             ? $spec['options_descriptions']
-            : array();
+            : [];
 
         $filters    = $this->prepareFilters($filters);
         $validators = $this->prepareValidators($validators);

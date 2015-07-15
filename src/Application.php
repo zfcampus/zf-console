@@ -110,7 +110,7 @@ class Application
         $this->routeCollection = $routeCollection = new RouteCollection();
         $this->setRoutes($routes);
 
-        $this->banner = array($this, 'showVersion');
+        $this->banner = [$this, 'showVersion'];
 
         if (! $routeCollection->hasRoute('help')) {
             $this->setupHelpCommand($routeCollection, $dispatcher);
@@ -378,7 +378,7 @@ class Application
      *
      * @return int
      */
-    protected function calcMaxString(array $data = array())
+    protected function calcMaxString(array $data = [])
     {
         $maxLength = 0;
 
@@ -441,23 +441,23 @@ class Application
     protected function setupHelpCommand(RouteCollection $routeCollection, Dispatcher $dispatcher)
     {
         $help = new HelpCommand($this);
-        $routeCollection->addRouteSpec(array(
+        $routeCollection->addRouteSpec([
             'name'                 => 'help',
             'route'                => '[<command>]',
             'description'          => "Display the help message for a given command.\n\n"
                                    . 'To display the list of available commands, '
                                    . 'call the script or help with no arguments.',
             'short_description'    => 'Get help for individual commands',
-            'options_descriptions' => array(
+            'options_descriptions' => [
                 'command' => 'Name of a command for which to get help',
-            ),
-            'constraints' => array(
+            ],
+            'constraints' => [
                 'command' => '/^[^\s]+$/',
-            ),
-            'defaults' => array(
+            ],
+            'defaults' => [
                 'help' => true,
-            ),
-        ));
+            ],
+        ]);
 
         $self = $this;           // PHP < 5.4 compat
         $banner = $this->banner; // PHP < 5.4 compat
@@ -478,16 +478,16 @@ class Application
      */
     protected function setupVersionCommand(RouteCollection $routeCollection, Dispatcher $dispatcher)
     {
-        $routeCollection->addRouteSpec(array(
+        $routeCollection->addRouteSpec([
             'name' => 'version',
             'route' => '(--version|-v)',
             'description' => 'Display the version of the script.',
             'short_description' => 'Display the version of the script',
-            'defaults' => array(
+            'defaults' => [
                 'version' => true,
-            ),
+            ],
             'prepend_command_to_route' => false,
-        ));
+        ]);
 
         $self = $this; // PHP < 5.4 compat
         $dispatcher->map('version', function ($route, $console) use ($self) {
@@ -506,11 +506,11 @@ class Application
      */
     protected function setupAutocompleteCommand(RouteCollection $routeCollection, Dispatcher $dispatcher)
     {
-        $routeCollection->addRouteSpec(array(
+        $routeCollection->addRouteSpec([
                 'name' => 'autocomplete',
                 'description' => 'Shows how to activate autocompletion of this command for your login shell',
                 'short_description' => 'Command autocompletion setup',
-        ));
+        ]);
 
         $dispatcher->map('autocomplete', function ($route, $console) {
             ob_start();
