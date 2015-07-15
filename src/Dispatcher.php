@@ -13,7 +13,7 @@ use Zend\Console\ColorInterface as Color;
 
 class Dispatcher
 {
-    protected $commandMap = array();
+    protected $commandMap = [];
 
     public function map($command, $callable)
     {

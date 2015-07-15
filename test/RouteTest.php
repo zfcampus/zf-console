@@ -47,16 +47,16 @@ class RouteTest extends TestCase
     public function testOptionsDescriptionIsEmptyArrayByDefault()
     {
         $route = new Route('foo', 'foo bar');
-        $this->assertEquals(array(), $route->getOptionsDescription());
+        $this->assertEquals([], $route->getOptionsDescription());
     }
 
     public function testOptionsDescriptionIsMutable()
     {
         $route = new Route('foo', 'foo bar');
-        $options = array(
+        $options = [
             'foo' => 'foolalalala',
             'bar' => 'none',
-        );
+        ];
         $route->setOptionsDescription($options);
         $this->assertEquals($options, $route->getOptionsDescription());
     }
@@ -70,7 +70,7 @@ class RouteTest extends TestCase
     public function testMatchesArePopulatedOnSuccessfulMatch()
     {
         $route = new Route('foo', 'foo bar');
-        $matches = $route->match(array('foo', 'bar'));
+        $matches = $route->match(['foo', 'bar']);
         $this->assertInternalType('array', $matches);
         $this->assertSame($matches, $route->getMatches());
     }
@@ -78,21 +78,21 @@ class RouteTest extends TestCase
     public function testMatchedParamReturnsTrueForParameterMatched()
     {
         $route = new Route('foo', 'foo <bar>');
-        $matches = $route->match(array('foo', 'BAR'));
+        $matches = $route->match(['foo', 'BAR']);
         $this->assertTrue($route->matchedParam('bar'));
     }
 
     public function testGetMatchedParamReturnsValueForParameterMatched()
     {
         $route = new Route('foo', 'foo <bar>');
-        $matches = $route->match(array('foo', 'BAR'));
+        $matches = $route->match(['foo', 'BAR']);
         $this->assertEquals('BAR', $route->getMatchedParam('bar'));
     }
 
     public function testGetMatchedParamReturnsDefaultValueIfParameterIsNotMatched()
     {
         $route = new Route('foo', 'foo [<bar>]');
-        $matches = $route->match(array('foo'));
+        $matches = $route->match(['foo']);
         $this->assertNull($route->getMatchedParam('bar'));
     }
 }

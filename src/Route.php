@@ -28,7 +28,7 @@ class Route extends DefaultRouteMatcher
     /**
      * @var array
      */
-    protected $optionsDescription = array();
+    protected $optionsDescription = [];
 
     /**
      * @var string
@@ -51,9 +51,9 @@ class Route extends DefaultRouteMatcher
     public function __construct(
         $name,
         $route,
-        array $constraints = array(),
-        array $defaults = array(),
-        array $aliases = array(),
+        array $constraints = [],
+        array $defaults = [],
+        array $aliases = [],
         array $filters = null,
         array $validators = null
     ) {
