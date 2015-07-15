@@ -111,23 +111,23 @@ EOT;
      */
     protected function fillTemplate(Exception $exception, $previous = false)
     {
-        $templates = array(
+        $templates = [
             ':className',
             ':message',
             ':code',
             ':file',
             ':line',
             ':stack',
-        );
+        ];
 
-        $replacements = array(
+        $replacements = [
             get_class($exception),
             $exception->getMessage(),
             $exception->getCode(),
             $exception->getFile(),
             $exception->getLine(),
             $exception->getTraceAsString(),
-        );
+        ];
 
         if ($previous) {
             array_push($templates, ':previous');

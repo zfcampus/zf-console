@@ -19,18 +19,18 @@
         }
     },
     "require": {
-        "php": ">=5.3.23",
-        "zendframework/zend-console": ">=2.3,<2.5"
+        "php": ">=5.5",
+        "zendframework/zend-console": "~2.3"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.7",
-        "squizlabs/php_codesniffer": "^2.3",
-        "zendframework/zend-filter": ">=2.3,<2.5",
-        "zendframework/zend-validator": ">=2.3,<2.5"
+        "squizlabs/php_codesniffer": "^2.3.1",
+        "zendframework/zend-filter": "~2.3",
+        "zendframework/zend-validator": "~2.3"
     },
     "suggest": {
-        "zendframework/zend-filter": ">=2.3,<2.5; Useful for filtering/normalizing argument values",
-        "zendframework/zend-validator": ">=2.3,<2.5; Useful for providing more thorough argument validation logic"
+        "zendframework/zend-filter": "~2.3; Useful for filtering/normalizing argument values",
+        "zendframework/zend-validator": "~2.3; Useful for providing more thorough argument validation logic"
     },
     "autoload": {
         "psr-4": {

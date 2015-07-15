@@ -64,7 +64,7 @@ class ExceptionHandlerTest extends TestCase
         $third = new Exception('thrown exception', 3, $second);
         $message = $this->handler->createMessage($third);
 
-        foreach (array($first, $second, $third) as $exception) {
+        foreach ([$first, $second, $third] as $exception) {
             $this->assertContains('ClassName: ' . get_class($exception), $message);
             $this->assertContains('Message: ' . $exception->getMessage(), $message);
             $this->assertContains('Code: ' . $exception->getCode(), $message);

@@ -54,26 +54,26 @@ class RouteCollectionTest extends TestCase
      */
     public function testCanAddRouteUsingSpecification()
     {
-        $spec = array(
+        $spec = [
             'name' => 'foo',
             'route' => 'foo [<bar>]',
             'description' => 'This is the full description',
             'short_description' => 'This is the short description',
-            'options_descriptions' => array(
+            'options_descriptions' => [
                 '<bar>' => 'The bar description',
-            ),
-            'constraints' => array(
+            ],
+            'constraints' => [
                 'bar' => '/^[a-z0-9_.-]+$/',
-            ),
-            'defaults' => array(
+            ],
+            'defaults' => [
                 'bar' => false,
-            ),
-            'aliases' => array(
+            ],
+            'aliases' => [
                 'baz' => 'bar',
-            ),
-            'filters' => array(),
-            'validators' => array(),
-        );
+            ],
+            'filters' => [],
+            'validators' => [],
+        ];
         $this->collection->addRouteSpec($spec);
         $this->assertEquals(1, count($this->collection));
         $this->assertTrue($this->collection->hasRoute('foo'));
@@ -86,11 +86,11 @@ class RouteCollectionTest extends TestCase
         $this->collection->addRoute(new Route('zeta', 'zeta'));
         $this->collection->addRoute(new Route('alpha', 'alpha'));
 
-        $order = array();
+        $order = [];
         foreach ($this->collection as $route) {
             $order[] = $route->getName();
         }
-        $this->assertEquals(array('alpha', 'bar', 'foo', 'zeta'), $order);
+        $this->assertEquals(['alpha', 'bar', 'foo', 'zeta'], $order);
     }
 
     public function testMatchReturnsFirstRouteToMatch()
@@ -100,7 +100,7 @@ class RouteCollectionTest extends TestCase
         $this->collection->addRoute(new Route('zeta', 'zeta'));
         $this->collection->addRoute(new Route('alpha', 'alpha'));
 
-        $route = $this->collection->match(array('foo', 'bar'));
+        $route = $this->collection->match(['foo', 'bar']);
         $this->assertInstanceOf('ZF\Console\Route', $route);
         $this->assertEquals('foo', $route->getName());
     }
@@ -112,33 +112,33 @@ class RouteCollectionTest extends TestCase
         $this->collection->addRoute(new Route('zeta', 'zeta'));
         $this->collection->addRoute(new Route('alpha', 'alpha'));
 
-        $this->assertFalse($this->collection->match(array('bogus', 'input')));
+        $this->assertFalse($this->collection->match(['bogus', 'input']));
     }
 
     public function filtersAndValidators()
     {
-        return array(
-            'class_names' => array(
+        return [
+            'class_names' => [
                 'Zend\Filter\StringToLower',
                 'Zend\Validator\NotEmpty',
                 'Zend\Filter\StringToLower',
                 'Zend\Validator\NotEmpty',
-            ),
-            'functions' => array(
+            ],
+            'functions' => [
                 'trim',
                 'assert',
                 'Zend\Filter\Callback',
                 'Zend\Validator\Callback',
-            ),
-            'closures' => array(
+            ],
+            'closures' => [
                 function () {
                 },
                 function () {
                 },
                 'Zend\Filter\Callback',
                 'Zend\Validator\Callback',
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -150,18 +150,18 @@ class RouteCollectionTest extends TestCase
         $expectedFilter,
         $expectedValidator
     ) {
-        $spec = array(
+        $spec = [
             'name'  => 'foo',
             'route' => 'foo [<bar>]',
             'description' => 'This is the full description',
             'short_description' => 'This is the short description',
-            'filters' => array(
+            'filters' => [
                 'bar' => $filter,
-            ),
-            'validators' => array(
+            ],
+            'validators' => [
                 'bar' => $validator,
-            ),
-        );
+            ],
+        ];
         $this->collection->addRouteSpec($spec);
         $this->assertEquals(1, count($this->collection));
         $this->assertTrue($this->collection->hasRoute('foo'));
@@ -188,9 +188,9 @@ class RouteCollectionTest extends TestCase
      */
     public function testAddingRouteSpecificationWithoutRouteUsesNameAsRoute()
     {
-        $spec = array(
+        $spec = [
             'name' => 'foo',
-        );
+        ];
         $this->collection->addRouteSpec($spec);
         $this->assertEquals(1, count($this->collection));
         $this->assertTrue($this->collection->hasRoute('foo'));
@@ -204,10 +204,10 @@ class RouteCollectionTest extends TestCase
      */
     public function testRouteNamePrependedToCommandByDefaultWhenNameDoesNotMatchInitialRouteSequence()
     {
-        $spec = array(
+        $spec = [
             'name' => 'foo',
             'route' => '<bar>',
-        );
+        ];
         $this->collection->addRouteSpec($spec);
         $this->assertEquals(1, count($this->collection));
         $this->assertTrue($this->collection->hasRoute('foo'));
@@ -221,10 +221,10 @@ class RouteCollectionTest extends TestCase
      */
     public function testRouteNameNotPrependedToCommandWhenNameMatchesInitialRouteSequence()
     {
-        $spec = array(
+        $spec = [
             'name' => 'foo',
             'route' => 'foo <bar>',
-        );
+        ];
         $this->collection->addRouteSpec($spec);
         $this->assertEquals(1, count($this->collection));
         $this->assertTrue($this->collection->hasRoute('foo'));
@@ -238,11 +238,11 @@ class RouteCollectionTest extends TestCase
      */
     public function testRouteNameNotPrependedToCommandWhenFlagSaysNotTo()
     {
-        $spec = array(
+        $spec = [
             'name' => 'foo',
             'route' => '<bar>',
             'prepend_command_to_route' => false,
-        );
+        ];
         $this->collection->addRouteSpec($spec);
         $this->assertEquals(1, count($this->collection));
         $this->assertTrue($this->collection->hasRoute('foo'));
