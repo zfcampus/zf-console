@@ -70,7 +70,6 @@ class Dispatcher
         $callable = $this->commandMap[$name];
 
         if (! is_callable($callable) && is_string($callable)) {
-
             if ($this->container && $this->container->has($callable)) {
                 $callable = $this->container->get($callable);
             } else {
