@@ -156,7 +156,7 @@ class Route extends DefaultRouteMatcher
      */
     public function isMatched()
     {
-        return is_array($matches);
+        return is_array($this->matches);
     }
 
     /**
