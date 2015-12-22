@@ -312,7 +312,7 @@ class ApplicationTest extends TestCase
                 },
             ],
         ]);
-        $application->disableBannerForUserCommands();
+        $application->setBannerDisabledForUserCommands();
 
         ob_start();
 
