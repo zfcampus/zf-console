@@ -208,7 +208,7 @@ class Application
             return 1;
         }
 
-        if(! $this->bannerDisabledForUserCommands) {
+        if (! $this->bannerDisabledForUserCommands) {
             $this->showMessage($this->banner);
         }
 

@@ -307,7 +307,9 @@ class ApplicationTest extends TestCase
                 'route' => 'test',
                 'description' => 'Test handler capabilities',
                 'short_description' => 'Test handler capabilities',
-                'handler' => function ($route, AdapterInterface $console) { $console->write('test output'); },
+                'handler' => function ($route, AdapterInterface $console) {
+                    $console->write('test output');
+                },
             ],
         ]);
         $application->disableBannerForUserCommands();
