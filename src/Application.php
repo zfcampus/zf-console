@@ -439,21 +439,24 @@ class Application
     /**
      * Disables the banner for user commands. Still shows it before usage messages.
      *
+     * @param bool $flag
+     *
      * @return self
      */
-    public function disableBannerForUserCommands()
+    public function setBannerDisabledForUserCommands($flag = true)
     {
-        $this->bannerDisabledForUserCommands = true;
+        $this->bannerDisabledForUserCommands = (bool) $flag;
         return $this;
     }
 
     /**
-     * @return self
+     * Whether or not to disable the banner in user commands. False by default.
+     *
+     * @return bool
      */
-    public function enableBannerForUserCommands()
+    public function isBannerDisabledForUserCommands()
     {
-        $this->bannerDisabledForUserCommands = false;
-        return $this;
+        return $this->bannerDisabledForUserCommands;
     }
 
     /**
