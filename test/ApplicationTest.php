@@ -6,6 +6,7 @@
 
 namespace ZFTest\Console;
 
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionProperty;
 use Zend\Console\Adapter\AdapterInterface;
@@ -15,6 +16,11 @@ use ZF\Console\Route;
 
 class ApplicationTest extends TestCase
 {
+    /**
+     * @var AdapterInterface|MockObject
+     */
+    private $console;
+
     public function setUp()
     {
         $this->version = uniqid();
@@ -276,5 +282,20 @@ class ApplicationTest extends TestCase
     {
         $this->setExpectedException('DomainException', 'registered');
         $this->application->removeRoute('does-not-exist');
+    }
+
+    public function testCanDisableBanner()
+    {
+        $application = new Application('test-name', 'foo-version', []);
+        $application->setBanner(null);
+
+        ob_start();
+
+        $application->run();
+
+        $buffer = ob_get_clean();
+
+        $this->assertNotContains('test-name', $buffer);
+        $this->assertNotContains('foo-version', $buffer);
     }
 }

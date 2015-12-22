@@ -294,14 +294,12 @@ class Application
      * If the default help implementation is used, also displayed with help
      * messages.
      *
-     * @param string|callable $bannerOrCallable
+     * @param null|string|callable $bannerOrCallable
      * @return self
      */
     public function setBanner($bannerOrCallable)
     {
-        if (! is_string($bannerOrCallable) && ! is_callable($bannerOrCallable)) {
-            throw new InvalidArgumentException('Banner must be a string message or callable');
-        }
+        $this->validateMessage($bannerOrCallable);
         $this->banner = $bannerOrCallable;
         return $this;
     }
@@ -314,14 +312,12 @@ class Application
      * If the default help implementation is used, also displayed with help
      * messages.
      *
-     * @param string|callable $footerOrCallable
+     * @param null|string|callable $footerOrCallable
      * @return self
      */
     public function setFooter($footerOrCallable)
     {
-        if (! is_string($footerOrCallable) && ! is_callable($footerOrCallable)) {
-            throw new InvalidArgumentException('Footer must be a string message or callable');
-        }
+        $this->validateMessage($footerOrCallable);
         $this->footer = $footerOrCallable;
         return $this;
     }
@@ -632,5 +628,15 @@ class Application
         }
 
         $this->dispatcher->map($command, $route['handler']);
+    }
+
+    /**
+     * @param mixed $stringOrCallable
+     */
+    protected function validateMessage($stringOrCallable)
+    {
+        if ($stringOrCallable !== null && ! is_string($stringOrCallable) && ! is_callable($stringOrCallable)) {
+            throw new InvalidArgumentException('Messages must be string or callable');
+        }
     }
 }
