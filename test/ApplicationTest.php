@@ -284,7 +284,7 @@ class ApplicationTest extends TestCase
         $this->application->removeRoute('does-not-exist');
     }
 
-    public function testCanDisableBanner()
+    public function testCanSetBannerToNull()
     {
         $application = new Application('test-name', 'foo-version', []);
         $application->setBanner(null);
@@ -297,5 +297,27 @@ class ApplicationTest extends TestCase
 
         $this->assertNotContains('test-name', $buffer);
         $this->assertNotContains('foo-version', $buffer);
+    }
+
+    public function testCanDisableBannerOnlyForCommands()
+    {
+        $application = new Application('test-app', 'test-version', [
+            [
+                'name'  => 'test',
+                'route' => 'test',
+                'description' => 'Test handler capabilities',
+                'short_description' => 'Test handler capabilities',
+                'handler' => function ($route, AdapterInterface $console) { $console->write('test output'); },
+            ],
+        ]);
+        $application->disableBannerForUserCommands();
+
+        ob_start();
+
+        $application->run([ 'test' ]);
+
+        $buffer = ob_get_clean();
+
+        $this->assertSame('test output', $buffer);
     }
 }

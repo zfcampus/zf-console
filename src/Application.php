@@ -65,6 +65,11 @@ class Application
     protected $version;
 
     /**
+     * @var bool
+     */
+    protected $bannerDisabledForUserCommands = false;
+
+    /**
      * Initialize the application
      *
      * Creates a RouteCollection and populates it with the $routes provided.
@@ -160,8 +165,6 @@ class Application
             $args = array_slice($argv, 1);
         }
 
-        $this->showMessage($this->banner);
-
         $result = $this->processRun($args);
 
         $this->showMessage($this->footer);
@@ -185,13 +188,16 @@ class Application
     protected function processRun(array $args)
     {
         if (empty($args)) {
+            $this->showMessage($this->banner);
             $this->showUsageMessage();
             return 0;
         }
 
         $route = $this->routeCollection->match($args);
         if (! $route instanceof Route) {
-            $name  = count($args) ? $args[0] : false;
+            $this->showMessage($this->banner);
+
+            $name  = $args[0];
             $route = $this->routeCollection->getRoute($name);
             if (! $route instanceof Route) {
                 $this->showUnmatchedRouteMessage($args);
@@ -200,6 +206,10 @@ class Application
 
             $this->showUsageMessageForRoute($route, true);
             return 1;
+        }
+
+        if(! $this->bannerDisabledForUserCommands) {
+            $this->showMessage($this->banner);
         }
 
         return $this->dispatcher->dispatch($route, $this->console);
@@ -427,6 +437,26 @@ class Application
     }
 
     /**
+     * Disables the banner for user commands. Still shows it before usage messages.
+     *
+     * @return self
+     */
+    public function disableBannerForUserCommands()
+    {
+        $this->bannerDisabledForUserCommands = true;
+        return $this;
+    }
+
+    /**
+     * @return self
+     */
+    public function enableBannerForUserCommands()
+    {
+        $this->bannerDisabledForUserCommands = false;
+        return $this;
+    }
+
+    /**
      * Sets up the default help command
      *
      * Creates the route, and maps the command.
@@ -557,6 +587,7 @@ class Application
     protected function showUsageMessageForRoute(Route $route, $log = false)
     {
         $console = $this->console;
+
         $console->writeLine('Usage:', Color::GREEN);
         $console->writeLine(' ' . $route->getRoute());
         $console->writeLine('');
