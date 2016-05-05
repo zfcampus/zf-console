@@ -35,7 +35,7 @@ class Application
     protected $debug = false;
 
     /**
-     * @var Dispatcher
+     * @var DispatcherInterface
      */
     protected $dispatcher;
 
@@ -79,14 +79,14 @@ class Application
      * @param string $version Application version
      * @param array|Traversable $routes Routes/route specifications to use for the application
      * @param Console $console Console adapter to use within the application
-     * @param Dispatcher $dispatcher Configured dispatcher mapping routes to callables
+     * @param DispatcherInterface $dispatcher Configured dispatcher mapping routes to callables
      */
     public function __construct(
         $name,
         $version,
         $routes,
         Console $console = null,
-        Dispatcher $dispatcher = null
+        DispatcherInterface $dispatcher = null
     ) {
         if (! is_array($routes) && ! $routes instanceof Traversable) {
             throw new InvalidArgumentException('Routes must be provided as an array or Traversable object');
@@ -126,7 +126,7 @@ class Application
     }
 
     /**
-     * @return Dispatcher
+     * @return DispatcherInterface
      */
     public function getDispatcher()
     {
@@ -436,9 +436,9 @@ class Application
      * Creates the route, and maps the command.
      *
      * @param RouteCollection $routeCollection
-     * @param Dispatcher $dispatcher
+     * @param DispatcherInterface $dispatcher
      */
-    protected function setupHelpCommand(RouteCollection $routeCollection, Dispatcher $dispatcher)
+    protected function setupHelpCommand(RouteCollection $routeCollection, DispatcherInterface $dispatcher)
     {
         $help = new HelpCommand($this);
         $routeCollection->addRouteSpec([
@@ -474,9 +474,9 @@ class Application
      * Creates the route, and maps the command.
      *
      * @param RouteCollection $routeCollection
-     * @param Dispatcher $dispatcher
+     * @param DispatcherInterface $dispatcher
      */
-    protected function setupVersionCommand(RouteCollection $routeCollection, Dispatcher $dispatcher)
+    protected function setupVersionCommand(RouteCollection $routeCollection, DispatcherInterface $dispatcher)
     {
         $routeCollection->addRouteSpec([
             'name' => 'version',
@@ -502,9 +502,9 @@ class Application
      * Creates the route, and maps the command.
      *
      * @param RouteCollection $routeCollection
-     * @param Dispatcher $dispatcher
+     * @param DispatcherInterface $dispatcher
      */
-    protected function setupAutocompleteCommand(RouteCollection $routeCollection, Dispatcher $dispatcher)
+    protected function setupAutocompleteCommand(RouteCollection $routeCollection, DispatcherInterface $dispatcher)
     {
         $routeCollection->addRouteSpec([
                 'name' => 'autocomplete',
