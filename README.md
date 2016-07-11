@@ -356,7 +356,7 @@ $ echo "source \$HOME/bin/{script}_autocomplete.sh" > > $HOME/{your_shell_rc}
 where `{script}` is the name of the command, and `{your_shell_rc}` is the location of your shell's
 runtime configutation file (e.g., `.bashrc`, `.zshrc`).
 
-Dispatcher Callables
+Dispatcher callables
 --------------------
 
 The `Dispatcher` will invoke the callable associated with a given route by calling it with two
@@ -376,6 +376,57 @@ The `Route` instance contains several methods of interest:
   and, if not matched, the `$default` value you provide.
 - `getName()` will return the name of the route (which may be useful if you use the same callable
   for multiple routes).
+
+Custom dispatchers
+------------------
+
+> - Since 1.3.0
+
+You may create a custom dispatcher by implementing
+`ZF\Console\DispatcherInterface`, which defines the following methods:
+
+```php
+namespace ZF\Console;
+
+use Zend\Console\Adapter\AdapterInterface as ConsoleAdapter;
+
+interface DispatcherInterface
+{
+    /**
+     * Map a command name to its handler.
+     *
+     * @param string $command
+     * @param callable|string $command A callable command, or a string service
+     *     or class name to use as a handler.
+     * @return self Should implement a fluent interface.
+     */
+    public function map($command, $callable);
+
+    /**
+     * Does the dispatcher have a handler for the given command?
+     *
+     * @param string $command
+     * @return bool
+     */
+    public function has($command);
+
+    /**
+     * Dispatch a routed command to its handler.
+     *
+     * @param Route $route
+     * @param ConsoleAdapter $console
+     * @return int The exit status code from the command.
+     */
+    public function dispatch(Route $route, ConsoleAdapter $console);
+}
+```
+
+When you do, instantiate your custom dispatcher and pass it to the `Application`
+instance when initializing it:
+
+```php
+$application = new Application('App', 1.0, $routes, null, $dispatcher);
+```
 
 Pulling commands from a container
 ---------------------------------

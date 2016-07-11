@@ -40,6 +40,10 @@ All notable changes to this project will be documented in this file, in reverse 
   ```php
   $application->setFooter(null);
   ```
+- [#30](https://github.com/zfcampus/zf-console/pull/30) adds
+  `ZF\Console\DispatcherInterface`, which defines the methods `map()`, `has()`,
+  and `dispatch()`; `Dispatcher` now implements the interface. By providing an
+  interface, consumers may now provide their own implementation when desired.
 
 ### Deprecated
 

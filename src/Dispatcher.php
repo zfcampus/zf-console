@@ -12,7 +12,7 @@ use RuntimeException;
 use Zend\Console\Adapter\AdapterInterface as ConsoleAdapter;
 use Zend\Console\ColorInterface as Color;
 
-class Dispatcher
+class Dispatcher implements DispatcherInterface
 {
     protected $commandMap = [];
 
@@ -33,11 +33,7 @@ class Dispatcher
     }
 
     /**
-     * Map a command name to its handler.
-     *
-     * @param string $command
-     * @param callable|string $command A callable command, or a string service
-     *     or class name to use as a handler.
+     * {@inheritDoc}
      */
     public function map($command, $callable)
     {
@@ -72,16 +68,16 @@ class Dispatcher
     }
 
     /**
-     * Does the dispatcher have a handler for the given command?
-     *
-     * @param string $command
-     * @return bool
+     * {@inheritDoc}
      */
     public function has($command)
     {
         return isset($this->commandMap[$command]);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function dispatch(Route $route, ConsoleAdapter $console)
     {
         $name = $route->getName();
