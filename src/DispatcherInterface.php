@@ -10,6 +10,14 @@ use Zend\Console\Adapter\AdapterInterface as ConsoleAdapter;
 
 interface DispatcherInterface
 {
+    /**
+     * Map a command name to its handler.
+     *
+     * @param string $command
+     * @param callable|string $command A callable command, or a string service
+     *     or class name to use as a handler.
+     * @return self Should implement a fluent interface.
+     */
     public function map($command, $callable);
 
     /**

@@ -33,11 +33,7 @@ class Dispatcher implements DispatcherInterface
     }
 
     /**
-     * Map a command name to its handler.
-     *
-     * @param string $command
-     * @param callable|string $command A callable command, or a string service
-     *     or class name to use as a handler.
+     * {@inheritDoc}
      */
     public function map($command, $callable)
     {
