@@ -669,7 +669,10 @@ class Application
      */
     protected function validateMessage($stringOrCallable)
     {
-        if ($stringOrCallable !== null && ! is_string($stringOrCallable) && ! is_callable($stringOrCallable)) {
+        if ($stringOrCallable !== null
+            && ! is_string($stringOrCallable)
+            && ! is_callable($stringOrCallable)
+        ) {
             throw new InvalidArgumentException('Messages must be string or callable');
         }
     }
