@@ -7,6 +7,7 @@
 namespace ZF\Console;
 
 use Exception;
+use Throwable;
 use Zend\Console\Adapter\AdapterInterface as Console;
 use Zend\Console\ColorInterface as Color;
 
@@ -67,9 +68,9 @@ EOT;
      *
      * On completion, exits with a non-zero status code.
      *
-     * @param Exception $exception
+     * @param Exception|Throwable $exception
      */
-    public function __invoke(Exception $exception)
+    public function __invoke($exception)
     {
         $message = $this->createMessage($exception);
 
@@ -87,10 +88,10 @@ EOT;
     /**
      * Create the message to emit based on the provided exception and current message template
      *
-     * @param Exception $exception
+     * @param Exception|Throwable $exception
      * @return string
      */
-    public function createMessage(Exception $exception)
+    public function createMessage($exception)
     {
         $previous          = '';
         $previousException = $exception->getPrevious();
@@ -105,11 +106,11 @@ EOT;
     /**
      * Fill the message template with details of the given exception
      *
-     * @param Exception $exception
+     * @param Exception|Throwable $exception
      * @param false|string $previous If provided, adds the ":previous" template and this value
      * @return string
      */
-    protected function fillTemplate(Exception $exception, $previous = false)
+    protected function fillTemplate($exception, $previous = false)
     {
         $templates = [
             ':className',
