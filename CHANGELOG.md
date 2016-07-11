@@ -62,7 +62,7 @@ All notable changes to this project will be documented in this file, in reverse 
   `ExceptionHandler` to allow handling either exceptions or PHP 7
   `Throwable`s.
 
-## 1.2.1 - TBD
+## 1.2.1 - 2016-07-11
 
 ### Added
 
