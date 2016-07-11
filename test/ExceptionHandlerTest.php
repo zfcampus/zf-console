@@ -20,7 +20,7 @@ class ExceptionHandlerTest extends TestCase
 {
     public function setUp()
     {
-        $this->console = $this->getMock('Zend\Console\Adapter\AdapterInterface');
+        $this->console = $this->getMockBuilder(AdapterInterface::class)->getMock();
         $this->handler = new ExceptionHandler($this->console);
     }
 

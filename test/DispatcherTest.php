@@ -6,20 +6,27 @@
 
 namespace ZFTest\Console;
 
+use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Console\Adapter\AdapterInterface;
 use ZF\Console\Dispatcher;
 use ZF\Console\Route;
+use ZFTest\Console\TestAsset\FooCommand;
 
 class DispatcherTest extends TestCase
 {
+    /**
+     * @var Dispatcher
+     */
+    private $dispatcher;
+
     public function setUp()
     {
-        $this->route = $this->getMockBuilder('ZF\Console\Route')
+        $this->route = $this->getMockBuilder(Route::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->console = $this->getMock('Zend\Console\Adapter\AdapterInterface');
+        $this->console = $this->getMockBuilder(AdapterInterface::class)->getMock();
 
         $this->dispatcher = new Dispatcher();
     }
@@ -90,5 +97,21 @@ class DispatcherTest extends TestCase
             ->method('getName')
             ->will($this->returnValue('test'));
         $this->assertEquals(2, $this->dispatcher->dispatch($this->route, $this->console));
+    }
+
+    public function testDispatchCanPullCommandFromContainer()
+    {
+        $container = $this->prophesize(ContainerInterface::class);
+        $container->has(FooCommand::class)->willReturn(true);
+        $container->get(FooCommand::class)->willReturn(new FooCommand());
+
+        $route = $this->prophesize(Route::class);
+        $route->getName()->willReturn('foobar');
+
+        $console = $this->prophesize(AdapterInterface::class);
+
+        $dispatcher = new Dispatcher($container->reveal());
+        $dispatcher->map('foobar', FooCommand::class);
+        $dispatcher->dispatch($route->reveal(), $console->reveal());
     }
 }

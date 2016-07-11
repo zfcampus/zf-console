@@ -35,7 +35,7 @@ class Application
     protected $debug = false;
 
     /**
-     * @var Dispatcher
+     * @var DispatcherInterface
      */
     protected $dispatcher;
 
@@ -65,6 +65,11 @@ class Application
     protected $version;
 
     /**
+     * @var bool
+     */
+    protected $bannerDisabledForUserCommands = false;
+
+    /**
      * Initialize the application
      *
      * Creates a RouteCollection and populates it with the $routes provided.
@@ -79,14 +84,14 @@ class Application
      * @param string $version Application version
      * @param array|Traversable $routes Routes/route specifications to use for the application
      * @param Console $console Console adapter to use within the application
-     * @param Dispatcher $dispatcher Configured dispatcher mapping routes to callables
+     * @param DispatcherInterface $dispatcher Configured dispatcher mapping routes to callables
      */
     public function __construct(
         $name,
         $version,
         $routes,
         Console $console = null,
-        Dispatcher $dispatcher = null
+        DispatcherInterface $dispatcher = null
     ) {
         if (! is_array($routes) && ! $routes instanceof Traversable) {
             throw new InvalidArgumentException('Routes must be provided as an array or Traversable object');
@@ -126,7 +131,7 @@ class Application
     }
 
     /**
-     * @return Dispatcher
+     * @return DispatcherInterface
      */
     public function getDispatcher()
     {
@@ -160,8 +165,6 @@ class Application
             $args = array_slice($argv, 1);
         }
 
-        $this->showMessage($this->banner);
-
         $result = $this->processRun($args);
 
         $this->showMessage($this->footer);
@@ -185,13 +188,16 @@ class Application
     protected function processRun(array $args)
     {
         if (empty($args)) {
+            $this->showMessage($this->banner);
             $this->showUsageMessage();
             return 0;
         }
 
         $route = $this->routeCollection->match($args);
         if (! $route instanceof Route) {
-            $name  = count($args) ? $args[0] : false;
+            $this->showMessage($this->banner);
+
+            $name  = $args[0];
             $route = $this->routeCollection->getRoute($name);
             if (! $route instanceof Route) {
                 $this->showUnmatchedRouteMessage($args);
@@ -200,6 +206,10 @@ class Application
 
             $this->showUsageMessageForRoute($route, true);
             return 1;
+        }
+
+        if (! $this->bannerDisabledForUserCommands) {
+            $this->showMessage($this->banner);
         }
 
         return $this->dispatcher->dispatch($route, $this->console);
@@ -294,14 +304,12 @@ class Application
      * If the default help implementation is used, also displayed with help
      * messages.
      *
-     * @param string|callable $bannerOrCallable
+     * @param null|string|callable $bannerOrCallable
      * @return self
      */
     public function setBanner($bannerOrCallable)
     {
-        if (! is_string($bannerOrCallable) && ! is_callable($bannerOrCallable)) {
-            throw new InvalidArgumentException('Banner must be a string message or callable');
-        }
+        $this->validateMessage($bannerOrCallable);
         $this->banner = $bannerOrCallable;
         return $this;
     }
@@ -314,14 +322,12 @@ class Application
      * If the default help implementation is used, also displayed with help
      * messages.
      *
-     * @param string|callable $footerOrCallable
+     * @param null|string|callable $footerOrCallable
      * @return self
      */
     public function setFooter($footerOrCallable)
     {
-        if (! is_string($footerOrCallable) && ! is_callable($footerOrCallable)) {
-            throw new InvalidArgumentException('Footer must be a string message or callable');
-        }
+        $this->validateMessage($footerOrCallable);
         $this->footer = $footerOrCallable;
         return $this;
     }
@@ -431,14 +437,37 @@ class Application
     }
 
     /**
+     * Disables the banner for user commands. Still shows it before usage messages.
+     *
+     * @param bool $flag
+     *
+     * @return self
+     */
+    public function setBannerDisabledForUserCommands($flag = true)
+    {
+        $this->bannerDisabledForUserCommands = (bool) $flag;
+        return $this;
+    }
+
+    /**
+     * Whether or not to disable the banner in user commands. False by default.
+     *
+     * @return bool
+     */
+    public function isBannerDisabledForUserCommands()
+    {
+        return $this->bannerDisabledForUserCommands;
+    }
+
+    /**
      * Sets up the default help command
      *
      * Creates the route, and maps the command.
      *
      * @param RouteCollection $routeCollection
-     * @param Dispatcher $dispatcher
+     * @param DispatcherInterface $dispatcher
      */
-    protected function setupHelpCommand(RouteCollection $routeCollection, Dispatcher $dispatcher)
+    protected function setupHelpCommand(RouteCollection $routeCollection, DispatcherInterface $dispatcher)
     {
         $help = new HelpCommand($this);
         $routeCollection->addRouteSpec([
@@ -474,9 +503,9 @@ class Application
      * Creates the route, and maps the command.
      *
      * @param RouteCollection $routeCollection
-     * @param Dispatcher $dispatcher
+     * @param DispatcherInterface $dispatcher
      */
-    protected function setupVersionCommand(RouteCollection $routeCollection, Dispatcher $dispatcher)
+    protected function setupVersionCommand(RouteCollection $routeCollection, DispatcherInterface $dispatcher)
     {
         $routeCollection->addRouteSpec([
             'name' => 'version',
@@ -502,9 +531,9 @@ class Application
      * Creates the route, and maps the command.
      *
      * @param RouteCollection $routeCollection
-     * @param Dispatcher $dispatcher
+     * @param DispatcherInterface $dispatcher
      */
-    protected function setupAutocompleteCommand(RouteCollection $routeCollection, Dispatcher $dispatcher)
+    protected function setupAutocompleteCommand(RouteCollection $routeCollection, DispatcherInterface $dispatcher)
     {
         $routeCollection->addRouteSpec([
                 'name' => 'autocomplete',
@@ -561,6 +590,7 @@ class Application
     protected function showUsageMessageForRoute(Route $route, $log = false)
     {
         $console = $this->console;
+
         $console->writeLine('Usage:', Color::GREEN);
         $console->writeLine(' ' . $route->getRoute());
         $console->writeLine('');
@@ -632,5 +662,18 @@ class Application
         }
 
         $this->dispatcher->map($command, $route['handler']);
+    }
+
+    /**
+     * @param mixed $stringOrCallable
+     */
+    protected function validateMessage($stringOrCallable)
+    {
+        if ($stringOrCallable !== null
+            && ! is_string($stringOrCallable)
+            && ! is_callable($stringOrCallable)
+        ) {
+            throw new InvalidArgumentException('Messages must be string or callable');
+        }
     }
 }

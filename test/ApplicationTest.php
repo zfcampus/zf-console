@@ -6,6 +6,7 @@
 
 namespace ZFTest\Console;
 
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionProperty;
 use Zend\Console\Adapter\AdapterInterface;
@@ -15,10 +16,15 @@ use ZF\Console\Route;
 
 class ApplicationTest extends TestCase
 {
+    /**
+     * @var AdapterInterface|MockObject
+     */
+    private $console;
+
     public function setUp()
     {
         $this->version = uniqid();
-        $this->console = $this->getMock('Zend\Console\Adapter\AdapterInterface');
+        $this->console = $this->getMockBuilder(AdapterInterface::class)->getMock();
         $this->dispatcher = new Dispatcher();
         $this->application = new Application(
             'ZFConsoleApplication',
@@ -276,5 +282,44 @@ class ApplicationTest extends TestCase
     {
         $this->setExpectedException('DomainException', 'registered');
         $this->application->removeRoute('does-not-exist');
+    }
+
+    public function testCanSetBannerToNull()
+    {
+        $application = new Application('test-name', 'foo-version', []);
+        $application->setBanner(null);
+
+        ob_start();
+
+        $application->run();
+
+        $buffer = ob_get_clean();
+
+        $this->assertNotContains('test-name', $buffer);
+        $this->assertNotContains('foo-version', $buffer);
+    }
+
+    public function testCanDisableBannerOnlyForCommands()
+    {
+        $application = new Application('test-app', 'test-version', [
+            [
+                'name'  => 'test',
+                'route' => 'test',
+                'description' => 'Test handler capabilities',
+                'short_description' => 'Test handler capabilities',
+                'handler' => function ($route, AdapterInterface $console) {
+                    $console->write('test output');
+                },
+            ],
+        ]);
+        $application->setBannerDisabledForUserCommands();
+
+        ob_start();
+
+        $application->run([ 'test' ]);
+
+        $buffer = ob_get_clean();
+
+        $this->assertSame('test output', $buffer);
     }
 }
