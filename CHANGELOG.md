@@ -44,6 +44,9 @@ All notable changes to this project will be documented in this file, in reverse 
   `ZF\Console\DispatcherInterface`, which defines the methods `map()`, `has()`,
   and `dispatch()`; `Dispatcher` now implements the interface. By providing an
   interface, consumers may now provide their own implementation when desired.
+- [#35](https://github.com/zfcampus/zf-console/pull/35) adds support for v3
+  components from Zend Framework, retaining backwards compatibility with v2
+  releases.
 
 ### Deprecated
 
@@ -51,7 +54,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- Nothing.
+- [#35](https://github.com/zfcampus/zf-console/pull/35) removes support for PHP 5.5.
 
 ### Fixed
 

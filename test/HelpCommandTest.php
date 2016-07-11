@@ -16,15 +16,15 @@ class HelpCommandTest extends TestCase
 {
     public function setUp()
     {
-        $this->application = $this->getMockBuilder('ZF\Console\Application')
+        $this->application = $this->getMockBuilder(Application::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->route = $this->getMockBuilder('ZF\Console\Route')
+        $this->route = $this->getMockBuilder(Route::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->console = $this->getMock('Zend\Console\Adapter\AdapterInterface');
+        $this->console = $this->getMockBuilder(AdapterInterface::class)->getMock();
 
         $this->command = new HelpCommand($this->application);
     }

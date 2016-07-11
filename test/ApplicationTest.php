@@ -24,7 +24,7 @@ class ApplicationTest extends TestCase
     public function setUp()
     {
         $this->version = uniqid();
-        $this->console = $this->getMock('Zend\Console\Adapter\AdapterInterface');
+        $this->console = $this->getMockBuilder(AdapterInterface::class)->getMock();
         $this->dispatcher = new Dispatcher();
         $this->application = new Application(
             'ZFConsoleApplication',
