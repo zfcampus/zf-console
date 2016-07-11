@@ -26,6 +26,20 @@ All notable changes to this project will be documented in this file, in reverse 
   ```
 
   (vs wrapping the handler in a closure.)
+- [#29](https://github.com/zfcampus/zf-console/pull/29) adds the ability to
+  disable output of the banner in two ways:
+
+  ```php
+  $application->setBannerDisabledForUserCommands(true);
+  $application->setBanner(null);
+  ```
+
+  You may also now disable a previously enabled footer by passing a null
+  value:
+
+  ```php
+  $application->setFooter(null);
+  ```
 
 ### Deprecated
 
