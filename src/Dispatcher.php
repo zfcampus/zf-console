@@ -6,6 +6,7 @@
 
 namespace ZF\Console;
 
+use Interop\Container\ContainerInterface;
 use InvalidArgumentException;
 use RuntimeException;
 use Zend\Console\Adapter\AdapterInterface as ConsoleAdapter;
@@ -15,16 +16,55 @@ class Dispatcher
 {
     protected $commandMap = [];
 
+    /**
+     * Container from which to pull command services when dispatching.
+     *
+     * @var null|ContainerInterface
+     */
+    protected $container;
+
+    /**
+     * @param null|ContainerInterface $container Container from which to pull
+     *     command services when dispatching.
+     */
+    public function __construct(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
+
+    /**
+     * Map a command name to its handler.
+     *
+     * @param string $command
+     * @param callable|string $command A callable command, or a string service
+     *     or class name to use as a handler.
+     */
     public function map($command, $callable)
     {
         if (! is_string($command) || empty($command)) {
             throw new InvalidArgumentException('Invalid command specified; must be a non-empty string');
         }
 
-        if (! is_callable($callable)) {
-            if (! is_string($callable) || ! class_exists($callable)) {
-                throw new InvalidArgumentException('Invalid command callback specified; must be callable');
-            }
+        if (is_callable($callable)) {
+            $this->commandMap[$command] = $callable;
+            return $this;
+        }
+
+        if (! is_string($callable)) {
+            throw new InvalidArgumentException(
+                'Invalid command callback specified; must be callable or a string class or service name'
+            );
+        }
+
+        if (class_exists($callable)) {
+            $this->commandMap[$command] = $callable;
+            return $this;
+        }
+
+        if (! $this->container || ! $this->container->has($callable)) {
+            throw new InvalidArgumentException(
+                'Invalid command callback specified; must be callable or a string class or service name'
+            );
         }
 
         $this->commandMap[$command] = $callable;
@@ -56,12 +96,14 @@ class Dispatcher
         $callable = $this->commandMap[$name];
 
         if (! is_callable($callable) && is_string($callable)) {
-            $callable = new $callable();
+            $callable = ($this->container && $this->container->has($callable))
+                ? $this->container->get($callable)
+                : new $callable();
+
             if (! is_callable($callable)) {
-                throw new RuntimeException(sprintf(
-                    'Invalid command class specified for "%s"; class must be invokable',
-                    $name
-                ));
+                throw new RuntimeException(
+                    sprintf('Invalid command class specified for "%s"; class must be invokable', $name)
+                );
             }
             $this->commandMap[$name] = $callable;
         }

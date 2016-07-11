@@ -26,11 +26,13 @@
         "phpunit/phpunit": "~4.7",
         "squizlabs/php_codesniffer": "^2.3.1",
         "zendframework/zend-filter": "~2.3",
-        "zendframework/zend-validator": "~2.3"
+        "zendframework/zend-validator": "~2.3",
+        "container-interop/container-interop": "^1.1"
     },
     "suggest": {
         "zendframework/zend-filter": "~2.3; Useful for filtering/normalizing argument values",
-        "zendframework/zend-validator": "~2.3; Useful for providing more thorough argument validation logic"
+        "zendframework/zend-validator": "~2.3; Useful for providing more thorough argument validation logic",
+        "container-interop/container-interop": "^1.1; For ability to pull dispatched commands from container"
     },
     "autoload": {
         "psr-4": {
