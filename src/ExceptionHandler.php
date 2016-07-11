@@ -7,6 +7,7 @@
 namespace ZF\Console;
 
 use Exception;
+use InvalidArgumentException;
 use Throwable;
 use Zend\Console\Adapter\AdapterInterface as Console;
 use Zend\Console\ColorInterface as Color;
@@ -72,6 +73,8 @@ EOT;
      */
     public function __invoke($exception)
     {
+        $this->validateException($exception);
+
         $message = $this->createMessage($exception);
 
         $this->console->writeLine('Application exception: ', Color::RED);
@@ -93,6 +96,8 @@ EOT;
      */
     public function createMessage($exception)
     {
+        $this->validateException($exception);
+
         $previous          = '';
         $previousException = $exception->getPrevious();
         while ($previousException) {
@@ -143,5 +148,22 @@ EOT;
         }
 
         return $message;
+    }
+
+    /**
+     * Validate that an exception was received
+     *
+     * @param mixed $exception
+     * @return void
+     * @throws InvalidArgumentException if a non-Throwable, non-Exception was provided.
+     */
+    private function validateException($exception)
+    {
+        if (! ($exception instanceof Throwable || $exception instanceof Exception)) {
+            throw new InvalidArgumentException(sprintf(
+                'Expected an Exception or Throwable; received %s',
+                (is_object($exception) ? get_class($exception) : gettype($exception))
+            ));
+        }
     }
 }
