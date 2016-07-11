@@ -22,11 +22,11 @@ class DispatcherTest extends TestCase
 
     public function setUp()
     {
-        $this->route = $this->getMockBuilder('ZF\Console\Route')
+        $this->route = $this->getMockBuilder(Route::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->console = $this->getMock('Zend\Console\Adapter\AdapterInterface');
+        $this->console = $this->getMockBuilder(AdapterInterface::class)->getMock();
 
         $this->dispatcher = new Dispatcher();
     }
