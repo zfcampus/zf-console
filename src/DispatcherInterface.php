@@ -20,5 +20,12 @@ interface DispatcherInterface
      */
     public function has($command);
 
+    /**
+     * Dispatch a routed command to its handler.
+     *
+     * @param Route $route
+     * @param ConsoleAdapter $console
+     * @return int The exit status code from the command.
+     */
     public function dispatch(Route $route, ConsoleAdapter $console);
 }

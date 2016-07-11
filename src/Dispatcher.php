@@ -72,16 +72,16 @@ class Dispatcher implements DispatcherInterface
     }
 
     /**
-     * Does the dispatcher have a handler for the given command?
-     *
-     * @param string $command
-     * @return bool
+     * {@inheritDoc}
      */
     public function has($command)
     {
         return isset($this->commandMap[$command]);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function dispatch(Route $route, ConsoleAdapter $console)
     {
         $name = $route->getName();
