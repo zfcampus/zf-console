@@ -22,14 +22,14 @@ Installation
 Run the following `composer` command:
 
 ```console
-$ composer require "zfcampus/zf-console:~1.0-dev"
+$ composer require zfcampus/zf-console
 ```
 
 Alternately, manually add the following to your `composer.json`, in the `require` section:
 
 ```javascript
 "require": {
-    "zfcampus/zf-console": "~1.0-dev"
+    "zfcampus/zf-console": "^1.3"
 }
 ```
 
@@ -314,6 +314,25 @@ $application->setBanner(function ($console) {           // callable
 
 $application->setFooter('Copyright 2014 Zend Technologies');
 ```
+
+> ### Disabling banners
+> 
+> The banner is shown by default. In some cases, you may not want to display it;
+> e.g., when piping output to another process.
+>
+> Starting with version 1.3.0, you can disable banner output using:
+>
+> ```php
+> $application->setBannerDisabledForUserCommands(true);
+> ```
+>
+> Additionally, starting with 1.3.0, you can explicitly nullify both the banner
+> and footer:
+>
+> ```php
+> $application->setBanner(null);
+> $application->setFooter(null);
+> ```
 
 ### Autocompletion
 
