@@ -6,6 +6,7 @@
 
 namespace ZF\Console;
 
+use Interop\Container\ContainerInterface;
 use InvalidArgumentException;
 use RuntimeException;
 use Zend\Console\Adapter\AdapterInterface as ConsoleAdapter;
@@ -14,6 +15,19 @@ use Zend\Console\ColorInterface as Color;
 class Dispatcher
 {
     protected $commandMap = [];
+
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
+
+    /**
+     * @param ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
 
     public function map($command, $callable)
     {
@@ -56,12 +70,16 @@ class Dispatcher
         $callable = $this->commandMap[$name];
 
         if (! is_callable($callable) && is_string($callable)) {
-            $callable = new $callable();
+            if ($this->container && $this->container->has($callable)) {
+                $callable = $this->container->get($callable);
+            } else {
+                $callable = new $callable();
+            }
+
             if (! is_callable($callable)) {
-                throw new RuntimeException(sprintf(
-                    'Invalid command class specified for "%s"; class must be invokable',
-                    $name
-                ));
+                throw new RuntimeException(
+                    sprintf('Invalid command class specified for "%s"; class must be invokable', $name)
+                );
             }
             $this->commandMap[$name] = $callable;
         }
