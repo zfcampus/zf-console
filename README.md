@@ -358,30 +358,49 @@ The `Route` instance contains several methods of interest:
 - `getName()` will return the name of the route (which may be useful if you use the same callable
   for multiple routes).
 
-Pulling commands from container
--------------------------------
+Pulling commands from a container
+---------------------------------
 
-You can keep your commands in service container, compatible with `container-interop`. In order 
-to do so, inject your container into `Dispatcher` object upon creation:
+> - Since 1.3.0
+
+Instead of specifying a callable or a class name for a command handler, you may
+store your handlers within a dependency injection container compatible with
+[container-interop](https://github.com/container-interop/container-interop);
+when you do so, you can specify the *service name* of the handler instead.
+
+To do this, you will need to create a `Dispatcher` instance, passing it the
+container you are using at instantiation:
+
 
 ```php
 $serviceManager = new ServiceManager(/* ... */);
 
 // use `zend-servicemanager` as container
 $dispatcher = new Dispatcher($serviceManager);
+```
 
+From there, you can configure routes using the service name (which is often a
+class name):
+
+```
 $routes = [
     [
         'name' => 'hello',        
         'handler' => HelloCommand::class,
     ]
 ];
+```
 
+Finally, do not forget to pass your dispatcher to your application when you
+initialize it:
+
+```php
 $application = new Application('App', 1.0, $routes, null, $dispatcher);
 ```
 
-In this example, when `hello` route is matched, `Dispatcher` will try to pull `HelloCommand` from 
-container and then execute it.
+In the above examples, when the `hello` route is matched, the `Dispatcher` will
+attempt to pull the `HelloCommand` service from the container prior to
+dispatching it.
 
 Exception Handling
 ------------------
