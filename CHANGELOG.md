@@ -55,7 +55,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#34](https://github.com/zfcampus/zf-console/pull/34) updates the
+  `ExceptionHandler` to allow handling either exceptions or PHP 7
+  `Throwable`s.
 
 ## 1.2.1 - TBD
 
