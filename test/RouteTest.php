@@ -75,6 +75,19 @@ class RouteTest extends TestCase
         $this->assertSame($matches, $route->getMatches());
     }
 
+    public function testIsMatchedReturnsFalseByDefault()
+    {
+        $route = new Route('foo', 'foo bar');
+        $this->assertFalse($route->isMatched());
+    }
+
+    public function testIsMatchedReturnsTrueOnSuccesfulMatch()
+    {
+        $route = new Route('foo', 'foo bar');
+        $route->match(['foo', 'bar']);
+        $this->assertTrue($route->isMatched());
+    }
+
     public function testMatchedParamReturnsTrueForParameterMatched()
     {
         $route = new Route('foo', 'foo <bar>');
