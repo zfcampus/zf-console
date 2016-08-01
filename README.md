@@ -538,7 +538,7 @@ To do this, you will need to bootstrap your application first. We'll assume you'
 script in your application's `bin/` directory for this example.
 
 ```php
-use Zend\Console\Adapter\AdapterInterface as Console;
+use Zend\Console\Console;
 use Zend\Console\ColorInterface as Color;
 use ZF\Console\Application;
 use ZF\Console\Dispatcher;
