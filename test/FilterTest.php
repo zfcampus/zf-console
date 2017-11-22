@@ -13,16 +13,16 @@ class FilterTest extends TestCase
 {
     public function testExplode()
     {
-        $string = "foo,bar,baz";
-        $expected = ['foo','bar','baz'];
+        $string = 'foo,bar,baz';
+        $expected = ['foo', 'bar', 'baz'];
         $filter = new Filter\Explode();
         $this->assertEquals($expected, $filter->filter($string));
     }
 
     public function testExplodePipeDelimiter()
     {
-        $string = "foo|bar|baz";
-        $expected = ['foo','bar','baz'];
+        $string = 'foo|bar|baz';
+        $expected = ['foo', 'bar', 'baz'];
         $filter = new Filter\Explode('|');
         $this->assertEquals($expected, $filter->filter($string));
     }
@@ -30,7 +30,7 @@ class FilterTest extends TestCase
     public function testJson()
     {
         $string = '{"session.save_handler": "cluster", "something": "else"}';
-        $expected = ['session.save_handler'=> 'cluster', 'something'=> 'else'];
+        $expected = ['session.save_handler' => 'cluster', 'something' => 'else'];
         $filter = new Filter\Json();
         $this->assertEquals($expected, $filter->filter($string));
     }
@@ -38,7 +38,7 @@ class FilterTest extends TestCase
     public function testQueryString()
     {
         $string = 'session.save_handler=cluster&something=else';
-        $expected = ['session.save_handler'=> 'cluster', 'something'=> 'else'];
+        $expected = ['session.save_handler' => 'cluster', 'something' => 'else'];
         $filter = new Filter\QueryString();
         $this->assertEquals($expected, $filter->filter($string));
     }

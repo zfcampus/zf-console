@@ -272,7 +272,7 @@ class Application
             $console->writeLine('');
         }
 
-        $maxSpaces = $this->calcMaxString($this->routeCollection->getRouteNames()) +  2;
+        $maxSpaces = $this->calcMaxString($this->routeCollection->getRouteNames()) + 2;
 
         foreach ($this->routeCollection as $route) {
             if ($name === $route->getName()) {
