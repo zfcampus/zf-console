@@ -7,7 +7,7 @@
 namespace ZFTest\Console;
 
 use Interop\Container\ContainerInterface;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Console\Adapter\AdapterInterface;
 use ZF\Console\Dispatcher;
 use ZF\Console\Route;
@@ -33,13 +33,15 @@ class DispatcherTest extends TestCase
 
     public function testMapRaisesInvalidArgumentForEmptyStringCommand()
     {
-        $this->setExpectedException('InvalidArgumentException', 'Invalid command specified');
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('Invalid command specified');
         $this->dispatcher->map('', 'trim');
     }
 
     public function testMapRaisesInvalidArgumentExceptionForInvalidCallable()
     {
-        $this->setExpectedException('InvalidArgumentException', 'Invalid command callback');
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('Invalid command callback');
         $this->dispatcher->map('trim', 'boo bar baz');
     }
 
@@ -67,7 +69,8 @@ class DispatcherTest extends TestCase
             ->method('getName')
             ->will($this->returnValue('test'));
 
-        $this->setExpectedException('RuntimeException', 'Invalid command class');
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('Invalid command class');
         $this->dispatcher->dispatch($this->route, $this->console);
     }
 

@@ -6,7 +6,7 @@
 
 namespace ZFTest\Console;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionObject;
 use ZF\Console\Route;
 use ZF\Console\RouteCollection;
@@ -266,7 +266,8 @@ class RouteCollectionTest extends TestCase
      */
     public function testAttemptingToRemoveAnUnregisteredRouteRaisesAnException()
     {
-        $this->setExpectedException('DomainException', 'registered');
+        $this->expectException('DomainException');
+        $this->expectExceptionMessage('registered');
         $this->collection->removeRoute('does-not-exist');
     }
 }

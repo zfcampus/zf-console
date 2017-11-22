@@ -6,7 +6,7 @@
 
 namespace ZFTest\Console;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use ZF\Console\Filter;
 
 class FilterTest extends TestCase
