@@ -1,7 +1,7 @@
 ZF\Console: Console Tool Helper
 ===============================
 
-[![Build Status](https://travis-ci.org/zfcampus/zf-console.png)](https://travis-ci.org/zfcampus/zf-console)
+[![Build Status](https://secure.travis-ci.org/zfcampus/zf-console.svg?branch=master)](https://secure.travis-ci.org/zfcampus/zf-console)
 [![Coverage Status](https://coveralls.io/repos/github/zfcampus/zf-console/badge.svg?branch=master)](https://coveralls.io/github/zfcampus/zf-console?branch=master)
 
 Introduction
