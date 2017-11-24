@@ -426,8 +426,8 @@ $application = new Application('App', 1.0, $routes, null, $dispatcher);
 > - Since 1.3.0
 
 Instead of specifying a callable or a class name for a command handler, you may
-store your handlers within a dependency injection container compatible with
-[container-interop](https://github.com/container-interop/container-interop);
+store your handlers within a dependency injection container compatible with the
+[PSR-11 specification](https://github.com/php-fig/container);
 when you do so, you can specify the *service name* of the handler instead.
 
 To do this, you will need to create a `Dispatcher` instance, passing it the
