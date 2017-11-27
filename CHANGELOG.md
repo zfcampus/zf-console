@@ -6,7 +6,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#41](https://github.com/zfcampus/zf-console/pull/41) adds support for PHP
+  versions 7.1 and 7.2.
 
 ### Deprecated
 
@@ -14,7 +15,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- Nothing.
+- [#41](https://github.com/zfcampus/zf-console/pull/41) removes support for
+  HHVM.
 
 ### Fixed
 

@@ -1,23 +1,20 @@
-ZF\Console: Console Tool Helper
-===============================
+# ZF\Console: Console Tool Helper
 
-[![Build Status](https://travis-ci.org/zfcampus/zf-console.png)](https://travis-ci.org/zfcampus/zf-console)
+[![Build Status](https://secure.travis-ci.org/zfcampus/zf-console.svg?branch=master)](https://secure.travis-ci.org/zfcampus/zf-console)
+[![Coverage Status](https://coveralls.io/repos/github/zfcampus/zf-console/badge.svg?branch=master)](https://coveralls.io/github/zfcampus/zf-console?branch=master)
 
-Introduction
-------------
+## Introduction
 
 `zf-console` provides functionality on top of `Zend\Console`, specifically a methodology for
 creating standalone PHP console applications using `Zend\Console`'s `DefaultRouteMatcher`.
 It includes built-in "help" and "version" commands, and colorization (via `Zend\Console`), as
 well as support for shell autocompletion.
 
-Requirements
-------------
+## Requirements
   
 Please see the [composer.json](composer.json) file.
 
-Installation
-------------
+## Installation
 
 Run the following `composer` command:
 
@@ -35,8 +32,7 @@ Alternately, manually add the following to your `composer.json`, in the `require
 
 And then run `composer update` to ensure the module is installed.
 
-Creating an application
------------------------
+## Creating an application
 
 Console applications written with `zf-console` consist of:
 
@@ -224,8 +220,7 @@ $exit = $application->run();
 exit($exit);
 ```
 
-Features
---------
+## Features
 
 `zf-console` provides a number of features "out of the box." These include:
 
@@ -356,8 +351,7 @@ $ echo "source \$HOME/bin/{script}_autocomplete.sh" > > $HOME/{your_shell_rc}
 where `{script}` is the name of the command, and `{your_shell_rc}` is the location of your shell's
 runtime configutation file (e.g., `.bashrc`, `.zshrc`).
 
-Dispatcher callables
---------------------
+## Dispatcher callables
 
 The `Dispatcher` will invoke the callable associated with a given route by calling it with two
 arguments:
@@ -377,8 +371,7 @@ The `Route` instance contains several methods of interest:
 - `getName()` will return the name of the route (which may be useful if you use the same callable
   for multiple routes).
 
-Custom dispatchers
-------------------
+## Custom dispatchers
 
 > - Since 1.3.0
 
@@ -428,8 +421,7 @@ instance when initializing it:
 $application = new Application('App', 1.0, $routes, null, $dispatcher);
 ```
 
-Pulling commands from a container
----------------------------------
+## Pulling commands from a container
 
 > - Since 1.3.0
 
@@ -472,8 +464,7 @@ In the above examples, when the `hello` route is matched, the `Dispatcher` will
 attempt to pull the `HelloCommand` service from the container prior to
 dispatching it.
 
-Exception Handling
-------------------
+## Exception Handling
 
 `zf-console` provides exception handling by default, via `ZF\Console\ExceptionHandler`. When your
 console application raises an exception, this handler will provide a "pretty" view of the error,
@@ -525,8 +516,7 @@ mode:
 $application->setDebug(true);
 ```
 
-Using zf-console in Zend Framework 2 Applications
--------------------------------------------------
+## Using zf-console in Zend Framework 2 Applications
 
 While Zend Framework 2 integrates console functionality into the MVC, you may want to write scripts
 that do not use the MVC. For instance, it may be easier to write an application-specific script
@@ -594,8 +584,7 @@ ensures all modules are bootstrapped, which means all configuration is loaded an
 services are wired, and all listeners are attached. You then pull relevant services from the
 `ServiceManager` and pass them to your console callbacks.
 
-Best Practices
---------------
+## Best Practices
 
 We recommend the following practices when creating applications using `zf-console`.
 
@@ -745,8 +734,7 @@ is already sanitized and ready to use.
   The above would deserialize a form-encoded value provided to `--exclude`;
   `--exclude='foo=bar&baz=bat'` would set `exclude` to `array('foo' => 'bar', 'baz' => 'bat')`.
 
-Classes
--------
+## Classes
 
 This library defines the following classes:
 
