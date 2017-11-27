@@ -12,7 +12,6 @@ use ReflectionProperty;
 use Zend\Console\Adapter\AdapterInterface;
 use ZF\Console\Application;
 use ZF\Console\Dispatcher;
-use ZF\Console\Route;
 
 class ApplicationTest extends TestCase
 {

@@ -9,6 +9,15 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#41](https://github.com/zfcampus/zf-console/pull/41) adds support for PHP
   versions 7.1 and 7.2.
 
+### Changed
+
+- [#40](https://github.com/zfcampus/zf-console/pull/40) changes the dependency
+  on container-interop/container-interop to psr/container, and updates internal
+  typehints against container-interop to reference the PSR-11 typehint instead.
+  This should generally not be an issue, as most containers that still typehint
+  against container-interop will use the last version of container-interop,
+  which extends the PSR-11 interface.
+
 ### Deprecated
 
 - Nothing.
