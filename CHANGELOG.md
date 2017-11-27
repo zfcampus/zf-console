@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.4.0 - TBD
+## 1.4.0 - 2017-11-27
 
 ### Added
 
@@ -26,24 +26,6 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - [#41](https://github.com/zfcampus/zf-console/pull/41) removes support for
   HHVM.
-
-### Fixed
-
-- Nothing.
-
-## 1.3.1 - TBD
-
-### Added
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
 
 ### Fixed
 
