@@ -6,8 +6,8 @@
 
 namespace ZFTest\Console;
 
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 use Zend\Console\Adapter\AdapterInterface;
 use ZF\Console\Dispatcher;
 use ZF\Console\Route;
