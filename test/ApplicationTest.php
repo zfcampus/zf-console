@@ -7,12 +7,11 @@
 namespace ZFTest\Console;
 
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use Zend\Console\Adapter\AdapterInterface;
 use ZF\Console\Application;
 use ZF\Console\Dispatcher;
-use ZF\Console\Route;
 
 class ApplicationTest extends TestCase
 {
@@ -280,7 +279,8 @@ class ApplicationTest extends TestCase
      */
     public function testAttemptingToRemoveAnUnregisteredRouteRaisesAnException()
     {
-        $this->setExpectedException('DomainException', 'registered');
+        $this->expectException('DomainException');
+        $this->expectExceptionMessage('registered');
         $this->application->removeRoute('does-not-exist');
     }
 

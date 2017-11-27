@@ -6,8 +6,8 @@
 
 namespace ZF\Console;
 
-use Interop\Container\ContainerInterface;
 use InvalidArgumentException;
+use Psr\Container\ContainerInterface;
 use RuntimeException;
 use Zend\Console\Adapter\AdapterInterface as ConsoleAdapter;
 use Zend\Console\ColorInterface as Color;

@@ -9,7 +9,7 @@ namespace ZFTest\Console;
 use DomainException;
 use Exception;
 use RuntimeException;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Console\Adapter\AdapterInterface;
 use ZF\Console\ExceptionHandler;
 
