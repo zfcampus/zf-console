@@ -1,5 +1,9 @@
 # ZF\Console: Console Tool Helper
 
+> ## Repository abandoned 2019-12-05
+>
+> This repository is no longer maintained. Other projects in the ecosystem, such as symfony/console, provide more robust and flexible solutions, and we recommend users target those runtimes instead.
+
 [![Build Status](https://secure.travis-ci.org/zfcampus/zf-console.svg?branch=master)](https://secure.travis-ci.org/zfcampus/zf-console)
 [![Coverage Status](https://coveralls.io/repos/github/zfcampus/zf-console/badge.svg?branch=master)](https://coveralls.io/github/zfcampus/zf-console?branch=master)
 
